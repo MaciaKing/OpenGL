@@ -1,0 +1,244 @@
+// Etapa1.cpp
+// Fichero principal 
+//g++ -o Etapa1 Etapa1.cpp -lGLU -lGL -lglut
+
+////////////////////////////////////////////////////
+#include <GL/glut.h>
+#include <GL/gl.h>
+#include <GL/glu.h>
+const int W_WIDTH = 500; // Tama�o incial de la ventana
+const int W_HEIGHT = 500;
+GLfloat rotate_x=0.0f;
+GLfloat rotate_y=0.0f;
+
+// ----------------------------------------------------------
+// Funciones 
+// ----------------------------------------------------------
+void Display(void);
+void specialKeys();
+void Reescalar(int w, int h);
+void Cubo();
+void Rectangulo();
+void Esfera();
+
+// Funci�n que visualiza la escena OpenGL
+void Display (void){
+  //  Borrar pantalla y Z-buffer
+  glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+
+  // Resetear transformaciones
+  glLoadIdentity();
+
+  // Otras transformaciones
+  // glTranslatef( 0.1, 0.0, 0.0 );      // No incluido
+  // glRotatef( 180, 0.0, 1.0, 0.0 );    // No incluido
+
+  // Rotar cuando el usuario cambie “rotate_x” y “rotate_y”
+  glRotatef( rotate_x, 1.0, 0.0, 0.0 );
+  glRotatef( rotate_y, 0.0, 1.0, 0.0 );
+
+  // Otras transformaciones
+  // glScalef( 2.0, 2.0, 0.0 );          // No incluido
+
+ // Cubo();
+ // Rectangulo();
+  Esfera();
+  glFlush();
+  glutSwapBuffers();
+}
+
+void Esfera(){
+	glColor3f(1,0,0);
+	GLUquadric *quad;
+	quad = gluNewQuadric();
+	gluSphere(quad,0.1f,100,20);
+}
+
+void Cubo(){
+  //LADO FRONTAL: lado multicolor
+  glBegin(GL_POLYGON);
+ 
+  glColor3f( 1.0, 0.0, 0.0 );     glVertex3f(  0.5, -0.5, -0.5 );      // P1 es rojo
+  glColor3f( 0.0, 1.0, 0.0 );     glVertex3f(  0.5,  0.5, -0.5 );      // P2 es verde
+  glColor3f( 0.0, 0.0, 1.0 );     glVertex3f( -0.5,  0.5, -0.5 );      // P3 es azul
+  glColor3f( 1.0, 0.0, 1.0 );     glVertex3f( -0.5, -0.5, -0.5 );      // P4 es morado
+ 
+  glEnd();
+
+  // LADO TRASERO: lado blanco
+  glBegin(GL_POLYGON);
+  glColor3f(   1.0,  1.0, 1.0 );
+  glVertex3f(  0.5, -0.5, 0.5 );
+  glVertex3f(  0.5,  0.5, 0.5 );
+  glVertex3f( -0.5,  0.5, 0.5 );
+  glVertex3f( -0.5, -0.5, 0.5 );
+  glEnd();
+ 
+  // LADO DERECHO: lado morado
+  glBegin(GL_POLYGON);
+  glColor3f(  1.0,  0.0,  1.0 );
+  glVertex3f( 0.5, -0.5, -0.5 );
+  glVertex3f( 0.5,  0.5, -0.5 );
+  glVertex3f( 0.5,  0.5,  0.5 );
+  glVertex3f( 0.5, -0.5,  0.5 );
+  glEnd();
+ 
+  // LADO IZQUIERDO: lado verde
+  glBegin(GL_POLYGON);
+  glColor3f(   0.0,  1.0,  0.0 );
+  glVertex3f( -0.5, -0.5,  0.5 );
+  glVertex3f( -0.5,  0.5,  0.5 );
+  glVertex3f( -0.5,  0.5, -0.5 );
+  glVertex3f( -0.5, -0.5, -0.5 );
+  glEnd();
+ 
+  // LADO SUPERIOR: lado azul
+  glBegin(GL_POLYGON);
+  glColor3f(   0.0,  0.0,  1.0 );
+  glVertex3f(  0.5,  0.5,  0.5 );
+  glVertex3f(  0.5,  0.5, -0.5 );
+  glVertex3f( -0.5,  0.5, -0.5 );
+  glVertex3f( -0.5,  0.5,  0.5 );
+  glEnd();
+ 
+  // LADO INFERIOR: lado rojo
+  glBegin(GL_POLYGON);
+  glColor3f(   1.0,  0.0,  0.0 );
+  glVertex3f(  0.5, -0.5, -0.5 );
+  glVertex3f(  0.5, -0.5,  0.5 );
+  glVertex3f( -0.5, -0.5,  0.5 );
+  glVertex3f( -0.5, -0.5, -0.5 );
+  glEnd();
+}
+
+
+void Rectangulo(){
+//LADO FRONTAL: lado multicolor
+  glBegin(GL_POLYGON);
+  glColor3f(   1.0,  1.0, 1.0 );
+  glVertex3f(  0.5, -0.5, 0.7 );
+  glVertex3f(  0.5,  0.5, 0.7 );
+  glVertex3f( -0.5,  0.5, 0.7 );
+  glVertex3f( -0.5, -0.5, 0.7 );
+  glEnd();
+
+  // LADO TRASERO: lado blanco
+  glBegin(GL_POLYGON);
+  glColor3f(   1.0,  1.0, 1.0 );
+  glVertex3f(  0.5, -0.5, 0.7 );
+  glVertex3f(  0.5,  0.5, 0.7 );
+  glVertex3f( -0.5,  0.5, 0.7 );
+  glVertex3f( -0.5, -0.5, 0.7 );
+  glEnd();
+ 
+  // LADO DERECHO: lado morado
+  glBegin(GL_POLYGON);
+  glColor3f(  1.0,  0.0,  1.0 );
+  glVertex3f( 0.5, -0.5, -0.7 );
+  glVertex3f( 0.5,  0.5, -0.7 );
+  glVertex3f( 0.5,  0.5,  0.7 );
+  glVertex3f( 0.5, -0.5,  0.7 );
+  glEnd();
+ 
+  // LADO IZQUIERDO: lado verde
+  glBegin(GL_POLYGON);
+  glColor3f(   0.0,  1.0,  0.0 );
+  glVertex3f( -0.5, -0.5,  0.7 );
+  glVertex3f( -0.5,  0.5,  0.7 );
+  glVertex3f( -0.5,  0.5, -0.7 );
+  glVertex3f( -0.5, -0.5, -0.7 );
+  glEnd();
+ 
+  // LADO SUPERIOR: lado azul
+  glBegin(GL_POLYGON);
+  glColor3f(   0.0,  0.0,  1.0 );
+  glVertex3f(  0.5,  0.5,  0.7 );
+  glVertex3f(  0.5,  0.5, -0.7 );
+  glVertex3f( -0.5,  0.5, -0.7 );
+  glVertex3f( -0.5,  0.5,  0.7 );
+  glEnd();
+ 
+  // LADO INFERIOR: lado rojo
+  glBegin(GL_POLYGON);
+  glColor3f(   1.0,  0.0,  0.0 );
+  glVertex3f(  0.5, -0.5, -0.7 );
+  glVertex3f(  0.5, -0.5,  0.7 );
+  glVertex3f( -0.5, -0.5,  0.7 );
+  glVertex3f( -0.5, -0.5, -0.7 );
+  glEnd();
+}
+
+// Funci�n que se ejecuta cuando el sistema no esta ocupado
+void Idle (void){
+
+	glutPostRedisplay();// Indicamos que es necesario repintar la pantalla
+}
+
+// ----------------------------------------------------------
+// Función que reescala todos los elementos de la pantalla.
+// Podemos deformar la ventana, que nuestros objetos no se deformaran.
+// ----------------------------------------------------------
+void Reescalar(int w, int h) {
+    glViewport(0, 0, w, h);
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    if (w <= h)
+        glOrtho(-1.0, 1.0, -1.0 * h / w, 1.0 * h / w, -1.0, 1.0);
+    else
+        glOrtho(-1.0 * w / h,
+            1.0 * w / h, -1.0, 1.0, -1.0, 1.0);
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();                             // Activar las modificaciones en el modelo
+    glutPostRedisplay();
+}
+
+// ----------------------------------------------------------
+// Función de retrollamada “specialKeys()” 
+// ----------------------------------------------------------
+void specialKeys( int key, int x, int y ) { 
+  //  Flecha derecha: aumentar rotación 5 grados
+  if (key == GLUT_KEY_RIGHT)
+    rotate_y += 5;
+ 
+  //  Flecha izquierda: disminuir rotación 5 grados
+  else if (key == GLUT_KEY_LEFT)
+    rotate_y -= 5;
+ 
+  else if (key == GLUT_KEY_UP)
+    rotate_x += 5;
+ 
+  else if (key == GLUT_KEY_DOWN)
+    rotate_x -= 5;
+  
+  glutPostRedisplay();//  Solicitar actualización de visualización
+}
+
+// ----------------------------------------------------------
+// Función “main()”
+// ----------------------------------------------------------
+int main(int argc, char* argv[]){
+ 
+  //  Inicializar los parámetros GLUT y de usuario proceso
+  glutInit(&argc,argv);
+
+  //  Solicitar ventana con color real y doble buffer con Z-buffer 
+  glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
+ 
+  // Crear ventana
+  glutCreateWindow("Cubo");
+
+  //  Habilitar la prueba de profundidad de Z-buffer
+  glEnable(GL_DEPTH_TEST);
+
+  // Funciones de retrollamada
+  glutDisplayFunc(Display);
+  glutSpecialFunc(specialKeys);
+  glutReshapeFunc(Reescalar); 
+
+  //  Pasar el control de eventos a GLUT
+  glutMainLoop();
+ 
+  //  Regresar al sistema operativo
+  return 0;
+ 
+}
