@@ -9,14 +9,52 @@
 const int W_WIDTH = 500; // Tama�o incial de la ventana
 const int W_HEIGHT = 500;
 GLfloat fAngulo; // Variable que indica el �ngulo de rotaci�n de los ejes. 
+GLfloat posX; // Indica la posicion en el eje X
+// Ejes de rotacion
+GLfloat xRot=0;
+GLfloat yRot=0;
+GLfloat zRot=0;
 bool izq=true;
+bool segueix=true;
+
+/*paraEjemplo12
+	Movemos el rectangula a partir de una "base"
+*/
+void paraEjemplo12(){
+		//EJEMPLO 1,2
+		glRotatef (fAngulo, 0.0f, 0.0f, 1.0f);
+		//FIN EJEMPLO 1,2
+		glBegin (GL_POLYGON);
+			glColor3f (0.0f, 0.0f, 0.0f);
+			glVertex3f(-0.02f, 0.0f, 0.0f);
+			glVertex3f(0.02f, 0.0f, 0.0f);
+			glVertex3f(0.02f, 0.3f, 0.0f);
+			glVertex3f(-0.02f, 0.3f, 0.0f);
+		glEnd();
+		glFlush();
+}
+
+/*paraEjemplo3
+	Para mover este rectangulo en el eje X
+*/
+void paraEjemplo3(){
+	glPushMatrix();
+	glTranslatef(posX, 0.0f, 0.0f),
+	glBegin (GL_POLYGON);
+		glColor3f (0.0f, 0.0f, 0.0f);
+		glVertex3f(-0.02f, 0.0f, 0.0f);
+		glVertex3f(0.02f, 0.0f, 0.0f);
+		glVertex3f(0.02f, 0.3f, 0.0f);
+		glVertex3f(-0.02f, 0.3f, 0.0f);
+	glEnd();
+	glPopMatrix();
+}
+
 
 // Funci�n que visualiza la escena OpenGL
-void Display (void)
-{
-	glutSwapBuffers();
-	// Borramos la escena
-	glClear (GL_COLOR_BUFFER_BIT);
+void Display (void){
+	glutSwapBuffers();	
+	glClear (GL_COLOR_BUFFER_BIT);// Borramos la escena
 
 	glPushMatrix();
 	// Rectangulo Base
@@ -29,45 +67,29 @@ void Display (void)
 			glVertex3f(-0.2f, -0.05f, 0.0f);
 		glEnd();
 
-		//EJEMPLO 1,2
-		//glRotatef (fAngulo, 0.0f, 0.0f, 1.0f);
-		//FIN EJEMPLO 1,2
-
-		//EJEMPLO 3
-		//           EJES     X     Y      Z
-		//glRotatef (0.0f, fAngulo, 0.0f, 1.0f);
-		glRotatef (0.0f, fAngulo, 0.0f, 0.0f);
-		//FIN EJEMPLO 3
-
-		glBegin (GL_POLYGON);
-			glColor3f (0.0f, 0.0f, 0.0f);
-			//         X,    Y
-			glVertex3f(-0.02f, 0.0f, 0.0f);
-			glVertex3f(0.02f, 0.0f, 0.0f);
-			glVertex3f(0.02f, 0.3f, 0.0f);
-			glVertex3f(-0.02f, 0.3f, 0.0f);
-		glEnd();
-
+	//paraEjemplo12();
+	paraEjemplo3();
 	glPopMatrix();
 	glFlush();
 }
 
-// Funci�n que se ejecuta cuando el sistema no esta ocupado
-void Idle (void)
-{
-/*
-//EJEMPLO 1
+/*ejemplo1
+	Movemos el rectangulo a x angulos
+*/
+void ejemplo1(){
 	if(fAngulo <90) {
 		fAngulo += 1.0f;
 	}else{
 		//izq=false;
 		fAngulo = -90.0f;
-	}
-// FIN EJEMPLO 1
-*/
+	}	
+}
 
-/*
-//EJEMPLO 2
+/*ejemplo2
+	Movemos el rectangulo a la izquierda
+	y a la derecha como un pendulo
+*/
+void ejemplo2(){
     if(izq){
 		if(fAngulo <90) {
 			fAngulo += 1.0f;
@@ -81,19 +103,32 @@ void Idle (void)
 			fAngulo -= 1.0f;
 		}
 	}
-// FIN EJEMPLO 2
+}
+
+/*ejemplo2
+	Movemos el rectangulo a la izquierda
+	y a la derecha. Desplazando TODO el objeto
 */
-
-//EJEMPLO 3 --> descomentar también linea
-	if(fAngulo < 90){
-		fAngulo +=0.1f;
+void ejemplo3(){
+	if(posX<0.2 && segueix){
+       posX+=0.01f;
 	}else{
-
+		segueix=false;
+		posX-=0.01f;
+		if(posX<=-0.2){ //Si llega al maximo permitido
+			segueix=true;
+		}
 	}
-//FIN EJEMPLO 3
-	
+}
+
+// Funci�n que se ejecuta cuando el sistema no esta ocupado
+void Idle (void){
+	//ejemplo1();
+	//ejemplo2();
+	ejemplo3();
 	glutPostRedisplay();// Indicamos que es necesario repintar la pantalla
 }
+
 
 void Reescalar(int w, int h) {
     glViewport(0, 0, w, h);
@@ -111,7 +146,6 @@ void Reescalar(int w, int h) {
 
 
 // Funci�n principal
-using namespace std;
 int main(int argc, char **argv) 
 {
 	fAngulo=0;
