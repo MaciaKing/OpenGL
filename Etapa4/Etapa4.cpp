@@ -8,15 +8,16 @@
 #include <GL/glu.h>
 const int W_WIDTH = 500; // Tama�o incial de la ventana
 const int W_HEIGHT = 500;
-GLfloat rotate_x=0.0f;
-GLfloat rotate_y=0.0f;
+GLfloat rotateEjeX=1.0f;
+GLfloat rotateEjeY=1.0f;
+GLfloat rotateEjeZ=-1.0f;
+
 
 // ----------------------------------------------------------
 // Funciones 
 // ----------------------------------------------------------
 void Display(void);
-void specialKeys();
-void ejesEspaciales();
+void movementCamara(int key);
 void Reescalar(int w, int h);
 void Cubo();
 void Rectangulo();
@@ -30,27 +31,16 @@ void Display (void){
   // Resetear transformaciones
   glLoadIdentity();
 
-  // Otras transformaciones
-  // glTranslatef( 0.1, 0.0, 0.0 );      // No incluido
-  // glRotatef( 180, 0.0, 1.0, 0.0 );    // No incluido
+  gluPerspective(90.0f,1.0f,0.0f,10.0f);
+  //gluLookAt(1.0f,-1.0f,1.0f,0.0f,0.0f,0.0f,1.0f,1.0f,1.0f); //define una transformacion visual
+  gluLookAt(rotateEjeX,rotateEjeY,rotateEjeZ,0.0f,0.0f,0.0f,0.0f,1.0f,0.0f);
+  //gluLookAt(rotateEjeX,rotateEjeY,rotateEjeZ,0.0f,0.0f,0.0f,rotateEjeX,rotateEjeY,rotateEjeZ);
 
-  // Rotar cuando el usuario cambie “rotate_x” y “rotate_y”
-  glRotatef( rotate_x, 1.0, 0.0, 0.0 );
-  glRotatef( rotate_y, 0.0, 1.0, 0.0 );
-
-  // Otras transformaciones
-  // glScalef( 2.0, 2.0, 0.0 );          // No incluido
-
- // Cubo();
  // Rectangulo();
- // Esfera();
-  ejesEspaciales();
+  Esfera();
+  //Cubo();
   glFlush();
   glutSwapBuffers();
-}
-
-void ejesEspaciales(){
- 
 }
 
 void Esfera(){
@@ -59,6 +49,7 @@ void Esfera(){
 	quad = gluNewQuadric();
 	gluSphere(quad,0.1f,100,20);
 }
+
 
 void Cubo(){
   //LADO FRONTAL: lado multicolor
@@ -198,24 +189,20 @@ void Reescalar(int w, int h) {
     glutPostRedisplay();
 }
 
-// ----------------------------------------------------------
-// Función de retrollamada “specialKeys()” 
-// ----------------------------------------------------------
-void specialKeys( int key, int x, int y ) { 
-  //  Flecha derecha: aumentar rotación 5 grados
+void movementCamara(int key, int x, int y){
   if (key == GLUT_KEY_RIGHT)
-    rotate_y += 5;
+    rotateEjeX += 0.1f;
  
-  //  Flecha izquierda: disminuir rotación 5 grados
   else if (key == GLUT_KEY_LEFT)
-    rotate_y -= 5;
- 
+    rotateEjeX -= 0.1f;
+
+ /*
   else if (key == GLUT_KEY_UP)
-    rotate_x += 5;
+    rotateEjeX += 0.01f;
  
   else if (key == GLUT_KEY_DOWN)
-    rotate_x -= 5;
-  
+    rotateEjeX -= 0.01f;
+  */
   glutPostRedisplay();//  Solicitar actualización de visualización
 }
 
@@ -231,14 +218,15 @@ int main(int argc, char* argv[]){
   glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
  
   // Crear ventana
-  glutCreateWindow("Cubo");
+  glutCreateWindow("Movimiento camara");
 
   //  Habilitar la prueba de profundidad de Z-buffer
   glEnable(GL_DEPTH_TEST);
 
   // Funciones de retrollamada
   glutDisplayFunc(Display);
-  glutSpecialFunc(specialKeys);
+  //glutSpecialFunc(specialKeys);
+  glutSpecialFunc(movementCamara);
   glutReshapeFunc(Reescalar); 
 
   //  Pasar el control de eventos a GLUT

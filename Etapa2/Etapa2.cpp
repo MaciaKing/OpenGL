@@ -17,39 +17,10 @@ GLfloat zRot=0;
 bool izq=true;
 bool segueix=true;
 
-/*paraEjemplo12
-	Movemos el rectangula a partir de una "base"
-*/
-void paraEjemplo12(){
-		//EJEMPLO 1,2
-		glRotatef (fAngulo, 0.0f, 0.0f, 1.0f);
-		//FIN EJEMPLO 1,2
-		glBegin (GL_POLYGON);
-			glColor3f (0.0f, 0.0f, 0.0f);
-			glVertex3f(-0.02f, 0.0f, 0.0f);
-			glVertex3f(0.02f, 0.0f, 0.0f);
-			glVertex3f(0.02f, 0.3f, 0.0f);
-			glVertex3f(-0.02f, 0.3f, 0.0f);
-		glEnd();
-		glFlush();
-}
-
-/*paraEjemplo3
-	Para mover este rectangulo en el eje X
-*/
-void paraEjemplo3(){
-	glPushMatrix();
-	glTranslatef(posX, 0.0f, 0.0f),
-	glBegin (GL_POLYGON);
-		glColor3f (0.0f, 0.0f, 0.0f);
-		glVertex3f(-0.02f, 0.0f, 0.0f);
-		glVertex3f(0.02f, 0.0f, 0.0f);
-		glVertex3f(0.02f, 0.3f, 0.0f);
-		glVertex3f(-0.02f, 0.3f, 0.0f);
-	glEnd();
-	glPopMatrix();
-}
-
+void pendulo1();
+void Display (void);
+void Idle (void);
+void Reescalar(int w, int h);
 
 // Funci�n que visualiza la escena OpenGL
 void Display (void){
@@ -67,37 +38,49 @@ void Display (void){
 			glVertex3f(-0.2f, -0.05f, 0.0f);
 		glEnd();
 
-	//paraEjemplo12();
-	paraEjemplo3();
+	//Primer brazo
+		glRotatef (fAngulo, 0.0f, 0.0f, 1.0f);
+		glBegin (GL_POLYGON);
+			glColor3f (1.0f, 0.1f, 0.1f);
+			//         X,    Y
+			glVertex3f(-0.02f, -0.02f, 0.0f);
+			glVertex3f(0.02f, -0.02f, 0.0f);
+			glVertex3f(0.02f, 0.3f, 0.0f);
+			glVertex3f(-0.02f, 0.3f, 0.0f);
+		glEnd();
+		
+		glPushMatrix();
+	//Segundo brazo
+		glTranslatef(0.0f,0.3f,0.0f);
+		glRotatef (fAngulo, 0.0f, 0.0f, 1.0f);		
+		glBegin (GL_POLYGON);
+			glColor3f (0.0f, 0.1f, 1.f);
+			//         X,    Y
+			glVertex3f(-0.01f, -0.02f, 0.0f);
+			glVertex3f(0.01f, -0.02f, 0.0f);
+			glVertex3f(0.01f, 0.3f, 0.0f);
+			glVertex3f(-0.01f, 0.3f, 0.0f);
+		glEnd();	
+		glPopMatrix();
+
 	glPopMatrix();
 	glFlush();
 }
 
-/*ejemplo1
-	Movemos el rectangulo a x angulos
-*/
-void ejemplo1(){
-	if(fAngulo <90) {
-		fAngulo += 1.0f;
-	}else{
-		//izq=false;
-		fAngulo = -90.0f;
-	}	
-}
-
-/*ejemplo2
+/*
+pendulo1
 	Movemos el rectangulo a la izquierda
 	y a la derecha como un pendulo
 */
-void ejemplo2(){
+void pendulo1(){
     if(izq){
-		if(fAngulo <90) {
+		if(fAngulo <70) {
 			fAngulo += 1.0f;
 		}else{
 			izq=false;			
 		}
 	}else{
-		if(fAngulo == -90){
+		if(fAngulo == -70){
 			izq=true;
 		}else{
 			fAngulo -= 1.0f;
@@ -105,27 +88,12 @@ void ejemplo2(){
 	}
 }
 
-/*ejemplo2
-	Movemos el rectangulo a la izquierda
-	y a la derecha. Desplazando TODO el objeto
-*/
-void ejemplo3(){
-	if(posX<0.2 && segueix){
-       posX+=0.01f;
-	}else{
-		segueix=false;
-		posX-=0.01f;
-		if(posX<=-0.2){ //Si llega al maximo permitido
-			segueix=true;
-		}
-	}
-}
+
+
 
 // Funci�n que se ejecuta cuando el sistema no esta ocupado
 void Idle (void){
-	//ejemplo1();
-	//ejemplo2();
-	ejemplo3();
+	pendulo1();
 	glutPostRedisplay();// Indicamos que es necesario repintar la pantalla
 }
 
