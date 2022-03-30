@@ -20,6 +20,7 @@ void Display(void);
 void movementCamara(int key);
 void Reescalar(int w, int h);
 void Cubo();
+void ejesEspaciales();
 void Rectangulo();
 void Esfera();
 
@@ -50,6 +51,55 @@ void Esfera(){
 	gluSphere(quad,0.1f,100,20);
 }
 
+/*
+ejesEspaciales: Dibujamos los ejes espaciales.
+ El eje y es de color verde
+ El eje x es de color rojo
+ El eje z es de colo azul
+*/
+void ejesEspaciales(){   
+  /*Eje z*/
+  glPushMatrix();
+     // NO rotamos porque ya esta en el eje
+     glColor3f(0,0,1);  
+     GLUquadric *quad3;
+     quad3 = gluNewQuadric();
+     gluCylinder(quad3,0.01f,0.01f,0.8f,32,20);
+     //Dibujamos el cono de arriba
+     glPushMatrix();
+        glTranslatef(0.0f,0.0f,0.8f);
+        glutSolidCone(0.05f,0.1f,32,20);
+     glPopMatrix();
+  glPopMatrix();
+
+   /* Eje y*/
+glPushMatrix();   
+   glRotatef(-90.0f,1.0f,0.0f,0.0f);
+   glColor3f(0,1,0);
+   GLUquadric *quad1;
+   quad1 = gluNewQuadric();
+   gluCylinder(quad1,0.01f,0.01f,0.8f,32,20);
+   //Dibujamos el cono de arriba
+   glPushMatrix();
+      glTranslatef(0.0f,0.0f,0.8f);
+      glutSolidCone(0.05f,0.1f,32,20);
+   glPopMatrix();
+glPopMatrix();
+
+   /*Eje x*/
+glPushMatrix(); 
+   glRotatef(90.0f,0.0f,1.0f,0.0f); 
+   glColor3f(1,0,0);  
+   GLUquadric *quad2;
+   quad2 = gluNewQuadric();
+   gluCylinder(quad2,0.01f,0.01f,0.8f,32,20);   
+   //Dibujamos el cono de arriba
+   glPushMatrix();
+      glTranslatef(0.0f,0.0f,0.8f);
+      glutSolidCone(0.05f,0.1f,32,20);
+   glPopMatrix();
+glPopMatrix();
+}
 
 void Cubo(){
   //LADO FRONTAL: lado multicolor

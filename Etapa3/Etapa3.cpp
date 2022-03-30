@@ -19,6 +19,7 @@ void specialKeys();
 void ejesEspaciales();
 void Reescalar(int w, int h);
 void Cubo();
+void ejesEspaciales();
 void Rectangulo();
 void Esfera();
 
@@ -39,6 +40,12 @@ void Display (void){
   glutSwapBuffers();
 }
 
+/*
+ejesEspaciales: Dibujamos los ejes espaciales.
+ El eje y es de color verde
+ El eje x es de color rojo
+ El eje z es de colo azul
+*/
 void ejesEspaciales(){   
   /*Eje z*/
   glPushMatrix();
