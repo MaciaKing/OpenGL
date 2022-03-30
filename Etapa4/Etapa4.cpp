@@ -37,9 +37,10 @@ void Display (void){
   gluLookAt(rotateEjeX,rotateEjeY,rotateEjeZ,0.0f,0.0f,0.0f,0.0f,1.0f,0.0f);
   //gluLookAt(rotateEjeX,rotateEjeY,rotateEjeZ,0.0f,0.0f,0.0f,rotateEjeX,rotateEjeY,rotateEjeZ);
 
- // Rectangulo();
-  Esfera();
+  // Rectangulo();
+  //Esfera();
   //Cubo();
+  ejesEspaciales();
   glFlush();
   glutSwapBuffers();
 }
