@@ -41,13 +41,18 @@ void Display (void){
 
 void ejesEspaciales(){   
   /*Eje z*/
-glPushMatrix();
-   // NO rotamos porque ya esta en el eje
-   glColor3f(0,0,1);  
-   GLUquadric *quad3;
-   quad3 = gluNewQuadric();
-   gluCylinder(quad3,0.01f,0.01f,0.8f,32,20);
- glPopMatrix();
+  glPushMatrix();
+     // NO rotamos porque ya esta en el eje
+     glColor3f(0,0,1);  
+     GLUquadric *quad3;
+     quad3 = gluNewQuadric();
+     gluCylinder(quad3,0.01f,0.01f,0.8f,32,20);
+     //Dibujamos el cono de arriba
+     glPushMatrix();
+        glTranslatef(0.0f,0.0f,0.8f);
+        glutSolidCone(0.05f,0.1f,32,20);
+     glPopMatrix();
+  glPopMatrix();
 
    /* Eje y*/
 glPushMatrix();   
@@ -56,7 +61,12 @@ glPushMatrix();
    GLUquadric *quad1;
    quad1 = gluNewQuadric();
    gluCylinder(quad1,0.01f,0.01f,0.8f,32,20);
- glPopMatrix();
+   //Dibujamos el cono de arriba
+   glPushMatrix();
+      glTranslatef(0.0f,0.0f,0.8f);
+      glutSolidCone(0.05f,0.1f,32,20);
+   glPopMatrix();
+glPopMatrix();
 
    /*Eje x*/
 glPushMatrix(); 
@@ -65,7 +75,12 @@ glPushMatrix();
    GLUquadric *quad2;
    quad2 = gluNewQuadric();
    gluCylinder(quad2,0.01f,0.01f,0.8f,32,20);   
- glPopMatrix();
+   //Dibujamos el cono de arriba
+   glPushMatrix();
+      glTranslatef(0.0f,0.0f,0.8f);
+      glutSolidCone(0.05f,0.1f,32,20);
+   glPopMatrix();
+glPopMatrix();
 }
 
 void Esfera(){
