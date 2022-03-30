@@ -23,25 +23,15 @@ void Rectangulo();
 void Esfera();
 
 // Funci�n que visualiza la escena OpenGL
-void Display (void){
-  //  Borrar pantalla y Z-buffer
-  glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
-
+void Display (void){  
+  glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);//  Borrar pantalla y Z-buffer
   // Resetear transformaciones
   glLoadIdentity();
-
-  // Otras transformaciones
-  // glTranslatef( 0.1, 0.0, 0.0 );      // No incluido
-  // glRotatef( 180, 0.0, 1.0, 0.0 );    // No incluido
-
   // Rotar cuando el usuario cambie “rotate_x” y “rotate_y”
   glRotatef( rotate_x, 1.0, 0.0, 0.0 );
   glRotatef( rotate_y, 0.0, 1.0, 0.0 );
 
-  // Otras transformaciones
-  // glScalef( 2.0, 2.0, 0.0 );          // No incluido
-
- // Cubo();
+  //Cubo();
  // Rectangulo();
  // Esfera();
   ejesEspaciales();
@@ -49,8 +39,33 @@ void Display (void){
   glutSwapBuffers();
 }
 
-void ejesEspaciales(){
- 
+void ejesEspaciales(){   
+  /*Eje z*/
+glPushMatrix();
+   // NO rotamos porque ya esta en el eje
+   glColor3f(0,0,1);  
+   GLUquadric *quad3;
+   quad3 = gluNewQuadric();
+   gluCylinder(quad3,0.01f,0.01f,0.8f,32,20);
+ glPopMatrix();
+
+   /* Eje y*/
+glPushMatrix();   
+   glRotatef(-90.0f,1.0f,0.0f,0.0f);
+   glColor3f(0,1,0);
+   GLUquadric *quad1;
+   quad1 = gluNewQuadric();
+   gluCylinder(quad1,0.01f,0.01f,0.8f,32,20);
+ glPopMatrix();
+
+   /*Eje x*/
+glPushMatrix(); 
+   glRotatef(90.0f,0.0f,1.0f,0.0f); 
+   glColor3f(1,0,0);  
+   GLUquadric *quad2;
+   quad2 = gluNewQuadric();
+   gluCylinder(quad2,0.01f,0.01f,0.8f,32,20);   
+ glPopMatrix();
 }
 
 void Esfera(){
@@ -222,8 +237,7 @@ void specialKeys( int key, int x, int y ) {
 // ----------------------------------------------------------
 // Función “main()”
 // ----------------------------------------------------------
-int main(int argc, char* argv[]){
- 
+int main(int argc, char* argv[]){ 
   //  Inicializar los parámetros GLUT y de usuario proceso
   glutInit(&argc,argv);
 
