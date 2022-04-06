@@ -8,9 +8,15 @@
 #include <GL/glu.h>
 const int W_WIDTH = 500; // Tama�o incial de la ventana
 const int W_HEIGHT = 500;
-GLfloat rotateEjeX=1.0f;
-GLfloat rotateEjeY=1.0f;
-GLfloat rotateEjeZ=-1.0f;
+GLfloat paneoEjeX=1.0f;
+GLfloat paneoEjeY=1.0f;
+GLfloat paneoEjeZ=-1.0f;
+
+GLfloat rotarEjeX=1.0f;
+GLfloat rotarEjeY=1.0f;
+GLfloat rotarEjeZ=-1.0f;
+
+bool isRotar=false;
 
 
 // ----------------------------------------------------------
@@ -23,6 +29,8 @@ void Cubo();
 void ejesEspaciales();
 void Rectangulo();
 void Esfera();
+void plano();
+void cambiarMovimiento(int key);
 
 // Funci�n que visualiza la escena OpenGL
 void Display (void){
@@ -34,15 +42,29 @@ void Display (void){
 
   gluPerspective(90.0f,1.0f,0.0f,10.0f);
   //gluLookAt(1.0f,-1.0f,1.0f,0.0f,0.0f,0.0f,1.0f,1.0f,1.0f); //define una transformacion visual
-  gluLookAt(rotateEjeX,rotateEjeY,rotateEjeZ,0.0f,0.0f,0.0f,0.0f,1.0f,0.0f);
+  //gluLookAt(rotateEjeX,rotateEjeY,rotateEjeZ,0.0f,0.0f,0.0f,1.0f,1.0f,1.0f);
+  //gluLookAt(rotateEjeX,rotateEjeY,rotateEjeZ,0.0f,0.0f,0.0f,0.0f,1.0f,0.0f);
+  gluLookAt(rotarEjeX,1.0f,-1.0f,paneoEjeX,paneoEjeY,0.0f,0.0f,1.0f,0.0f);
+
   //gluLookAt(rotateEjeX,rotateEjeY,rotateEjeZ,0.0f,0.0f,0.0f,rotateEjeX,rotateEjeY,rotateEjeZ);
 
   // Rectangulo();
   //Esfera();
   //Cubo();
   ejesEspaciales();
+  plano();
   glFlush();
   glutSwapBuffers();
+}
+
+void plano(){
+ glBegin(GL_POLYGON);
+  glColor3f(   1.0,  1.0, 1.0 );
+  glVertex3f(  0.0,  0.0, 0.0 );
+  glVertex3f(  1.5,  0.0, 0.0 );
+  glVertex3f(  1.5,  0.0, 0.7 );
+  glVertex3f(  0.0,  0.0, 0.7 );
+ glEnd();
 }
 
 void Esfera(){
@@ -240,23 +262,54 @@ void Reescalar(int w, int h) {
     glutPostRedisplay();
 }
 
+/*
+movementCamara -> 
+*/
 void movementCamara(int key, int x, int y){
-  if (key == GLUT_KEY_RIGHT)
-    rotateEjeX += 0.1f;
- 
-  else if (key == GLUT_KEY_LEFT)
-    rotateEjeX -= 0.1f;
-
- /*
-  else if (key == GLUT_KEY_UP)
-    rotateEjeX += 0.01f;
- 
-  else if (key == GLUT_KEY_DOWN)
-    rotateEjeX -= 0.01f;
-  */
+  cambiarMovimiento(key);
+  if (!isRotar){
+    //Movimiento de la camara fijo
+    if (key == GLUT_KEY_RIGHT)
+      paneoEjeX -= 0.1f;
+   
+    else if (key == GLUT_KEY_LEFT)
+      paneoEjeX += 0.1f;
+  
+    else if (key == GLUT_KEY_DOWN)
+      paneoEjeY -=0.1f;
+  
+    else if (key == GLUT_KEY_UP)
+     paneoEjeY +=0.1f;
+  }else{
+    //Movimiento de la camara libre
+    if (key == GLUT_KEY_RIGHT)
+      rotarEjeX -= 0.1f;
+   
+    else if (key == GLUT_KEY_LEFT)
+      rotarEjeX += 0.1f;
+  
+    else if (key == GLUT_KEY_DOWN)
+      rotarEjeY -=0.1f;
+  
+    else if (key == GLUT_KEY_UP)
+     rotarEjeY +=0.1f;
+  }
   glutPostRedisplay();//  Solicitar actualización de visualización
 }
 
+/*
+cambiarMovimiento -> Si puslamos la tecla ZZ, cambiamos
+de modo de control de la camara.
+ 1.- Movimiento de la camara punto fijo.
+ 2.- Movimiento de la camara libre.
+*/
+void cambiarMovimiento(int key){
+ if (key == GLUT_KEY_F1){
+    if (isRotar) isRotar=false;
+    else  isRotar=true;
+ }
+ 
+}
 // ----------------------------------------------------------
 // Función “main()”
 // ----------------------------------------------------------
