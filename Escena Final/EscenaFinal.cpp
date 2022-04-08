@@ -14,9 +14,9 @@ GLfloat paneoEjeZ=-1.0f;
 
 GLfloat rotarEjeX=1.0f;
 GLfloat rotarEjeY=1.0f;
-GLfloat rotarEjeZ=0.0f;
+GLfloat rotarEjeZ=-1.0f;
 
-GLfloat anguloRotacion=0.0f;
+GLfloat aux=0.0f;
 
 bool isRotar=false;
 
@@ -33,57 +33,100 @@ void Rectangulo();
 void Esfera();
 void plano();
 void cambiarMovimiento(int key);
-void rotarCamara();
-
-
+void lampara();
+void rotar();
 
 // Funci�n que visualiza la escena OpenGL
 void Display (void){
   //  Borrar pantalla y Z-buffer
-  glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+  glEnable(GL_DEPTH_TEST);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
   // Resetear transformaciones
   glLoadIdentity();
+  //glTranslatef(aux,0.0f,0.0f);
+  
+  glRotatef(aux,0.0f,1.0f,0.0f);
+  rotar();
 
-  gluPerspective(90.0f,1.0f,0.0f,10.0f);
+  //gluPerspective(90.0f,1.0f,0.0f,10.0f);
   //gluLookAt(1.0f,-1.0f,1.0f,0.0f,0.0f,0.0f,1.0f,1.0f,1.0f); //define una transformacion visual
   //gluLookAt(rotateEjeX,rotateEjeY,rotateEjeZ,0.0f,0.0f,0.0f,1.0f,1.0f,1.0f);
   //gluLookAt(rotateEjeX,rotateEjeY,rotateEjeZ,0.0f,0.0f,0.0f,0.0f,1.0f,0.0f);
-  //if (!isRotar) {
-   // gluLookAt(1.0f,rotarEjeY,rotarEjeZ,paneoEjeX,paneoEjeY,0.0f,0.0f,1.0f,0.0f);
-    gluLookAt(2.0f,0.0f,rotarEjeZ,0.0f,0.0f,0.0f,0.0f,1.0f,0.0f);
-    rotarCamara();
- /* }else{
+  //gluLookAt(0.0f,1.0f,rotarEjeZ,paneoEjeX,paneoEjeY,0.0f,0.0f,1.0f,0.0f);
 
-  }*/
-
-  // Rectangulo();
-  //Esfera();
-  //Cubo();
-  ejesEspaciales();
-  plano();
+  //ejesEspaciales();
+ // plano();
+  lampara();
   glFlush();
   glutSwapBuffers();
 }
 
-void rotarCamara(){
- /* if(rotarEjeZ<=1.0f){
-  rotarEjeZ+=0.01f;
-  }*/
-
-
+void rotar(){
+  aux+=0.5f;
   glutPostRedisplay();//  Solicitar actualización de visualización
 
 }
 
 void plano(){
+  // glRectf(-0.2f, 0.0f, 0.2f, 0.5f);
  glBegin(GL_POLYGON);
   glColor3f(   1.0,  1.0, 1.0 );
   glVertex3f(  0.0,  0.0, 0.0 );
   glVertex3f(  1.5,  0.0, 0.0 );
-  glVertex3f(  1.5,  0.0, 0.7 );
-  glVertex3f(  0.0,  0.0, 0.7 );
+  glVertex3f(  1.5,  0.0, 1.0 );
+  glVertex3f(  0.0,  0.0, 1.0 );
  glEnd();
+}
+
+void lampara(){
+  //Base Lampara
+  glPushMatrix();
+  glRotatef(-90.0f,1.0f,0.0f,0.0f); 
+  glColor3f(1,0,0);
+  glutSolidCone(0.1f,0.1f,32,20);
+  glPopMatrix();
+  //Fin Base Lampara
+
+for(int i=0; i<=2;i=i+1){
+  glPushMatrix();
+  if(i==2){ //Movemos la segunda Pierna     
+      glTranslatef(-0.05f,0.0f,0.0f); 
+      glColor3f(   0.0f,  0.0f, 1.0f );
+  }else glColor3f(   0.0f,  1.0f, 0.0f );
+
+  glBegin(GL_POLYGON);
+    //glColor3f(   0.0,  1.0, 1.0 );
+    //Cara Un costat
+    glVertex3f(  0.0f, 0.0f, 0.0f );
+    glVertex3f(  0.03f, 0.0f, 0.0f );         
+    glVertex3f(  0.03f, 0.3f, 0.0f );     
+    glVertex3f(  0.0f, 0.3f, 0.0f ); 
+
+    //Cara Un costat
+    //glColor3f(1,0,0);
+    glVertex3f(  0.03f, 0.0f, 0.0f );
+    glVertex3f(  0.03f, 0.0f, 0.03f );         
+    glVertex3f(  0.03f, 0.3f, 0.03f );     
+    glVertex3f(  0.03f, 0.3f, 0.0f ); 
+
+    //Cara Un costat
+   //glColor3f(0,1,0);
+    glVertex3f(  0.03f, 0.0f, 0.03f );
+    glVertex3f(  0.03f, 0.3f, 0.03f );         
+    glVertex3f(  0.0f, 0.3f, 0.03f );     
+    glVertex3f(  0.0f, 0.0f, 0.03f ); 
+
+    //Cara Un costat
+    //glColor3f(0,0,1);
+    glVertex3f(  0.0f, 0.3f, 0.03f );
+    glVertex3f(  0.0f, 0.0f, 0.03f );         
+    glVertex3f(  0.0f, 0.0f, 0.0f );     
+    glVertex3f(  0.0f, 0.3f, 0.0f ); 
+  glEnd();
+  glPopMatrix();
+  }
+ 
 }
 
 void Esfera(){
@@ -100,6 +143,8 @@ ejesEspaciales: Dibujamos los ejes espaciales.
  El eje z es de colo azul
 */
 void ejesEspaciales(){   
+  //glPushMatrix();
+  //glTranslatef(0.0f,0.0f,0.0f);
   /*Eje z*/
   glPushMatrix();
      // NO rotamos porque ya esta en el eje
@@ -141,6 +186,9 @@ glPushMatrix();
       glutSolidCone(0.05f,0.1f,32,20);
    glPopMatrix();
 glPopMatrix();
+
+//glPopMatrix();
+
 }
 
 void Cubo(){
