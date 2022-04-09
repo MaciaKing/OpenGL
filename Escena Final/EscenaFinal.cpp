@@ -46,14 +46,16 @@ void Display (void){
   glLoadIdentity();
   //glTranslatef(aux,0.0f,0.0f);
   
+  /*
   glRotatef(aux,0.0f,1.0f,0.0f);
   rotar();
+*/
 
-  //gluPerspective(90.0f,1.0f,0.0f,10.0f);
+  gluPerspective(90.0f,1.0f,0.0f,10.0f);
   //gluLookAt(1.0f,-1.0f,1.0f,0.0f,0.0f,0.0f,1.0f,1.0f,1.0f); //define una transformacion visual
   //gluLookAt(rotateEjeX,rotateEjeY,rotateEjeZ,0.0f,0.0f,0.0f,1.0f,1.0f,1.0f);
   //gluLookAt(rotateEjeX,rotateEjeY,rotateEjeZ,0.0f,0.0f,0.0f,0.0f,1.0f,0.0f);
-  //gluLookAt(0.0f,1.0f,rotarEjeZ,paneoEjeX,paneoEjeY,0.0f,0.0f,1.0f,0.0f);
+  gluLookAt(0.0f,1.0f,rotarEjeZ,paneoEjeX,paneoEjeY,0.0f,0.0f,1.0f,0.0f);
 
   //ejesEspaciales();
  // plano();
@@ -88,13 +90,13 @@ void lampara(){
   glPopMatrix();
   //Fin Base Lampara
 
+//DOS BRAZOS
 for(int i=0; i<=2;i=i+1){
   glPushMatrix();
   if(i==2){ //Movemos la segunda Pierna     
       glTranslatef(-0.05f,0.0f,0.0f); 
       glColor3f(   0.0f,  0.0f, 1.0f );
   }else glColor3f(   0.0f,  1.0f, 0.0f );
-
   glBegin(GL_POLYGON);
     //glColor3f(   0.0,  1.0, 1.0 );
     //Cara Un costat
@@ -125,8 +127,23 @@ for(int i=0; i<=2;i=i+1){
     glVertex3f(  0.0f, 0.3f, 0.0f ); 
   glEnd();
   glPopMatrix();
+  //FIN DOS BRAZOS
   }
  
+ //BASE AEREA
+ glPushMatrix();
+ glTranslatef(0.01f,0.0f,-0.05f);//Lo movemos en el cetro de las dos columnas
+ glBegin(GL_POLYGON);
+    glColor3f(   0.0,  0.0, 1.0 );
+    //BASE
+    glVertex3f(  -0.1f, 0.3f, 0.0f );
+    glVertex3f(  0.1f, 0.3f, 0.0f );         
+    glVertex3f(  0.1f, 0.3f, 0.1f );     
+    glVertex3f(  -0.1f, 0.3f, 0.1f ); 
+
+ glEnd();
+ glPopMatrix();
+ //FIN BASE AEREA
 }
 
 void Esfera(){
