@@ -66,7 +66,7 @@ void Display (void){
 
 void rotar(){
   aux+=0.5f;
- // glRotatef(aux,0.0f,1.0f,0.0f);
+  //glRotatef(aux,0.0f,1.0f,0.0f);
   glRotatef(aux,1.0f,0.0f,0.0f);
   glutPostRedisplay();//  Solicitar actualización de visualización
 
@@ -89,6 +89,13 @@ void lampara(){
   glRotatef(-90.0f,1.0f,0.0f,0.0f); 
   glColor3f(1,0,0);
   glutSolidCone(0.1f,0.1f,32,20);
+   glPushMatrix();
+    glColor3f(1.0f,1.0f,1.0f);
+    glTranslatef(0.0f,0.0f,-0.05f);
+    GLUquadric *quad;
+    quad = gluNewQuadric();
+    gluCylinder(quad,0.1,0.1,0.05,25,25);
+   glPopMatrix();
   glPopMatrix();
   //Fin Base Lampara
 
@@ -200,9 +207,66 @@ glBegin(GL_POLYGON);
     glVertex3f(  0.1f, 0.35f, 0.1f );     
     glVertex3f(  -0.1f, 0.35f, 0.1f ); 
 glEnd();
- glPopMatrix();
+glPopMatrix();
  //FIN BASE AEREA
- 
+
+//BRAZO AEREO
+ glPushMatrix();
+ glTranslatef(-0.01f,0.35f,0.0f);
+glBegin(GL_POLYGON);
+    glColor3f(   0.0,  1.0, 1.0 );
+    //Cara Un costat
+    glVertex3f(  0.0f, 0.0f, 0.0f );
+    glVertex3f(  0.03f, 0.0f, 0.0f );         
+    glVertex3f(  0.03f, 0.3f, 0.0f );     
+    glVertex3f(  0.0f, 0.3f, 0.0f ); 
+glEnd();
+glBegin(GL_POLYGON);
+    //glColor3f(1,0,0);
+    glVertex3f(  0.03f, 0.0f, 0.0f );
+    glVertex3f(  0.03f, 0.0f, 0.03f );         
+    glVertex3f(  0.03f, 0.3f, 0.03f );     
+    glVertex3f(  0.03f, 0.3f, 0.0f ); 
+glEnd();
+glBegin(GL_POLYGON);
+   //glColor3f(0,1,0);
+    glVertex3f(  0.03f, 0.0f, 0.03f );
+    glVertex3f(  0.03f, 0.3f, 0.03f );         
+    glVertex3f(  0.0f, 0.3f, 0.03f );     
+    glVertex3f(  0.0f, 0.0f, 0.03f ); 
+glEnd();    
+glBegin(GL_POLYGON);
+    glVertex3f(  0.0f, 0.3f, 0.03f );
+    glVertex3f(  0.0f, 0.0f, 0.03f );         
+    glVertex3f(  0.0f, 0.0f, 0.0f );     
+    glVertex3f(  0.0f, 0.3f, 0.0f ); 
+glEnd();
+glBegin(GL_POLYGON);
+    glVertex3f(  0.0f, 0.3f, 0.0f );
+    glVertex3f(  0.03f, 0.3f, 0.0f );         
+    glVertex3f(  0.03f, 0.3f, 0.03f );     
+    glVertex3f(  0.0f, 0.3f, 0.03f ); 
+glEnd();
+glPopMatrix();
+//FIN BRAZO AEREO
+
+//MINI BRAZO AEREO
+glPushMatrix();
+ glColor3f(0.0f,1.0f,0.0f);
+ glRotatef(90,1.0f,0.0f,0.0f);     // ROTACION LAMPARA
+// glTranslatef(0.0f,0.0f,-0.6f);
+ glTranslatef(0.0f,0.0f,-0.74f);
+
+ GLUquadric *quad1;
+ quad1 = gluNewQuadric();
+ gluCylinder(quad1,0.01,0.01,0.1,25,25);
+glPopMatrix();
+//FIN MINI BRAZO AEREO
+
+//LAMPARA
+
+//FIN LAMPARA
+
 }
 
 void Esfera(){
