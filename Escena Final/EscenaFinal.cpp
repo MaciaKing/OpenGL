@@ -46,17 +46,17 @@ void Display (void){
   glLoadIdentity();
   //glTranslatef(aux,0.0f,0.0f);
   
-  /*
-  glRotatef(aux,0.0f,1.0f,0.0f);
+  
+  //glRotatef(aux,0.0f,1.0f,0.0f);
   rotar();
-*/
 
-  gluPerspective(90.0f,1.0f,0.0f,10.0f);
+
+ /* gluPerspective(90.0f,1.0f,0.0f,10.0f);
   //gluLookAt(1.0f,-1.0f,1.0f,0.0f,0.0f,0.0f,1.0f,1.0f,1.0f); //define una transformacion visual
   //gluLookAt(rotateEjeX,rotateEjeY,rotateEjeZ,0.0f,0.0f,0.0f,1.0f,1.0f,1.0f);
   //gluLookAt(rotateEjeX,rotateEjeY,rotateEjeZ,0.0f,0.0f,0.0f,0.0f,1.0f,0.0f);
   gluLookAt(0.0f,1.0f,rotarEjeZ,paneoEjeX,paneoEjeY,0.0f,0.0f,1.0f,0.0f);
-
+*/
   //ejesEspaciales();
  // plano();
   lampara();
@@ -66,6 +66,8 @@ void Display (void){
 
 void rotar(){
   aux+=0.5f;
+ // glRotatef(aux,0.0f,1.0f,0.0f);
+  glRotatef(aux,1.0f,0.0f,0.0f);
   glutPostRedisplay();//  Solicitar actualización de visualización
 
 }
@@ -132,18 +134,75 @@ for(int i=0; i<=2;i=i+1){
  
  //BASE AEREA
  glPushMatrix();
- glTranslatef(0.01f,0.0f,-0.05f);//Lo movemos en el cetro de las dos columnas
+ glTranslatef(0.0f,0.0f,-0.05f);//Lo movemos en el cetro de las dos columnas
  glBegin(GL_POLYGON);
     glColor3f(   0.0,  0.0, 1.0 );
     //BASE
+    glColor3f(0.0f,0.0f,1.0f);
     glVertex3f(  -0.1f, 0.3f, 0.0f );
     glVertex3f(  0.1f, 0.3f, 0.0f );         
     glVertex3f(  0.1f, 0.3f, 0.1f );     
     glVertex3f(  -0.1f, 0.3f, 0.1f ); 
+glEnd();
+glBegin(GL_POLYGON);
+    glColor3f(1.0f,0.0f,0.0f);
+    glVertex3f(  -0.1f, 0.3f, 0.1f ); 
+    glVertex3f(  -0.1f, 0.35f, 0.1f );
+    glVertex3f(   0.1f, 0.35f, 0.1f ); 
+    glVertex3f(   0.1f, 0.3f, 0.1f ); 
+glEnd();
 
- glEnd();
+glBegin(GL_POLYGON);
+    glColor3f(0.0f,0.0f,1.0f);
+    glVertex3f(  0.1f, 0.35f, 0.1f ); 
+    glVertex3f(  0.1f, 0.3f, 0.1f );
+    glVertex3f(  0.1f, 0.3f, 0.0f ); 
+    glVertex3f(  0.1f, 0.3f, 0.0f  ); 
+glEnd();
+
+glBegin(GL_POLYGON);
+    glColor3f(0.0f,0.0f,1.0f);
+    glVertex3f(  0.1f, 0.35f, 0.1f ); 
+    glVertex3f(  0.1f, 0.3f, 0.1f );
+    glVertex3f(  0.1f, 0.3f, 0.0f ); 
+    glVertex3f(  0.1f, 0.35f, 0.0f  ); 
+glEnd();
+
+glBegin(GL_POLYGON);
+    glColor3f(0.0f,1.0f,0.0f);
+    glVertex3f(  0.1f, 0.3f, 0.0f ); 
+    glVertex3f(  0.1f, 0.35f, 0.0f );
+    glVertex3f(  -0.1f, 0.35f, 0.0f ); 
+    glVertex3f(  -0.1f, 0.3f, 0.0f  ); 
+glEnd();
+
+glBegin(GL_POLYGON);
+    glColor3f(0.0f,1.0f,0.0f);
+    glVertex3f(  0.1f, 0.3f, 0.0f ); 
+    glVertex3f(  0.1f, 0.35f, 0.0f );
+    glVertex3f(  -0.1f, 0.35f, 0.0f ); 
+    glVertex3f(  -0.1f, 0.3f, 0.0f  ); 
+glEnd();
+
+glBegin(GL_POLYGON);
+    glColor3f(0.0f,1.0f,1.0f);
+    glVertex3f(  -0.1f, 0.35f, 0.0f ); 
+    glVertex3f(  -0.1f, 0.3f, 0.0f );
+    glVertex3f(  -0.1f, 0.3f, 0.1f ); 
+    glVertex3f(  -0.1f, 0.35f, 0.1f  ); 
+glEnd();
+    
+glBegin(GL_POLYGON);
+    glColor3f(   1.0,  1.0, 0.0 );
+    //BASE
+    glVertex3f(  -0.1f, 0.35f, 0.0f );
+    glVertex3f(  0.1f, 0.35f, 0.0f );         
+    glVertex3f(  0.1f, 0.35f, 0.1f );     
+    glVertex3f(  -0.1f, 0.35f, 0.1f ); 
+glEnd();
  glPopMatrix();
  //FIN BASE AEREA
+ 
 }
 
 void Esfera(){
