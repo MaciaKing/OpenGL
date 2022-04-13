@@ -3,37 +3,53 @@
 //g++ -o Etapa1 Etapa1.cpp -lGLU -lGL -lglut
 
 ////////////////////////////////////////////////////
+
 #include <GL/glut.h>
 #include <GL/gl.h>
 #include <GL/glu.h>
+#include <stdio.h>
+
 const int W_WIDTH = 500; // Tama�o incial de la ventana
 const int W_HEIGHT = 500;
-GLfloat paneoEjeX=1.0f;
-GLfloat paneoEjeY=1.0f;
-GLfloat paneoEjeZ=-1.0f;
+GLfloat paneoEjeX=0.0f;
+GLfloat paneoEjeY=0.0f;
+GLfloat paneoEjeZ=0.0f;
 
-GLfloat rotarEjeX=1.0f;
+/*GLfloat rotarEjeX=1.0f;
 GLfloat rotarEjeY=1.0f;
-GLfloat rotarEjeZ=0.0f;
+GLfloat rotarEjeZ=0.0f;*/
+
+GLfloat travellX=0.0f;
+GLfloat travellY=0.0f;
+GLfloat travellZ=0.0f;
 
 GLfloat anguloRotacion=0.0f;
 
 bool isRotar=false;
+//Vector al que miramos (desde la camara)
+float vector[3]={2.0f,0.0f,0.0f};
 
+char tipoVision='p'; //p= paneo + tilt
+                     //t= travelling/Dolly 
+                     //l= movimiento libre de camara
 
 // ----------------------------------------------------------
 // Funciones 
 // ----------------------------------------------------------
 void Display(void);
-void movementCamara(int key);
+void movementCamara(int key, int x, int y);
 void Reescalar(int w, int h);
 void Cubo();
 void ejesEspaciales();
 void Rectangulo();
 void Esfera();
-void plano();
 void cambiarMovimiento(int key);
 void rotarCamara();
+//void detectaTecla(int caracter, int x, int y);
+void detectaTecla(unsigned char caracter, int x, int y);
+void paneo(int key);   
+void travellingDolly(int key);
+void movimietoLibreCamara(int key);
 
 
 
@@ -46,52 +62,17 @@ void Display (void){
   glLoadIdentity();
 
   gluPerspective(90.0f,1.0f,0.0f,10.0f);
-  //gluLookAt(1.0f,-1.0f,1.0f,0.0f,0.0f,0.0f,1.0f,1.0f,1.0f); //define una transformacion visual
-  //gluLookAt(rotateEjeX,rotateEjeY,rotateEjeZ,0.0f,0.0f,0.0f,1.0f,1.0f,1.0f);
-  //gluLookAt(rotateEjeX,rotateEjeY,rotateEjeZ,0.0f,0.0f,0.0f,0.0f,1.0f,0.0f);
-  //if (!isRotar) {
-   // gluLookAt(1.0f,rotarEjeY,rotarEjeZ,paneoEjeX,paneoEjeY,0.0f,0.0f,1.0f,0.0f);
-    gluLookAt(2.0f,0.0f,rotarEjeZ,0.0f,0.0f,0.0f,0.0f,1.0f,0.0f);
-    rotarCamara();
- /* }else{
+  if (tipoVision='p'){
+    gluLookAt(vector[0],vector[1],vector[2]  ,paneoEjeX,paneoEjeY,paneoEjeZ,  0.0f,1.0f,0.0f);
+  }else if(tipoVision='t'){
+    gluLookAt(vector[0]+travellX,vector[1]+travellY,vector[2]+travellZ  ,paneoEjeX+travellX,paneoEjeY+travellY,paneoEjeZ+travellZ,  0.0f,1.0f,0.0f);
+  }
 
-  }*/
-
-  // Rectangulo();
-  //Esfera();
-  //Cubo();
   ejesEspaciales();
-  plano();
   glFlush();
   glutSwapBuffers();
 }
 
-void rotarCamara(){
- /* if(rotarEjeZ<=1.0f){
-  rotarEjeZ+=0.01f;
-  }*/
-
-
-  glutPostRedisplay();//  Solicitar actualización de visualización
-
-}
-
-void plano(){
- glBegin(GL_POLYGON);
-  glColor3f(   1.0,  1.0, 1.0 );
-  glVertex3f(  0.0,  0.0, 0.0 );
-  glVertex3f(  1.5,  0.0, 0.0 );
-  glVertex3f(  1.5,  0.0, 0.7 );
-  glVertex3f(  0.0,  0.0, 0.7 );
- glEnd();
-}
-
-void Esfera(){
-	glColor3f(1,0,0);
-	GLUquadric *quad;
-	quad = gluNewQuadric();
-	gluSphere(quad,0.1f,100,20);
-}
 
 /*
 ejesEspaciales: Dibujamos los ejes espaciales.
@@ -201,61 +182,6 @@ void Cubo(){
 }
 
 
-void Rectangulo(){
-//LADO FRONTAL: lado multicolor
-  glBegin(GL_POLYGON);
-  glColor3f(   1.0,  1.0, 1.0 );
-  glVertex3f(  0.5, -0.5, 0.7 );
-  glVertex3f(  0.5,  0.5, 0.7 );
-  glVertex3f( -0.5,  0.5, 0.7 );
-  glVertex3f( -0.5, -0.5, 0.7 );
-  glEnd();
-
-  // LADO TRASERO: lado blanco
-  glBegin(GL_POLYGON);
-  glColor3f(   1.0,  1.0, 1.0 );
-  glVertex3f(  0.5, -0.5, 0.7 );
-  glVertex3f(  0.5,  0.5, 0.7 );
-  glVertex3f( -0.5,  0.5, 0.7 );
-  glVertex3f( -0.5, -0.5, 0.7 );
-  glEnd();
- 
-  // LADO DERECHO: lado morado
-  glBegin(GL_POLYGON);
-  glColor3f(  1.0,  0.0,  1.0 );
-  glVertex3f( 0.5, -0.5, -0.7 );
-  glVertex3f( 0.5,  0.5, -0.7 );
-  glVertex3f( 0.5,  0.5,  0.7 );
-  glVertex3f( 0.5, -0.5,  0.7 );
-  glEnd();
- 
-  // LADO IZQUIERDO: lado verde
-  glBegin(GL_POLYGON);
-  glColor3f(   0.0,  1.0,  0.0 );
-  glVertex3f( -0.5, -0.5,  0.7 );
-  glVertex3f( -0.5,  0.5,  0.7 );
-  glVertex3f( -0.5,  0.5, -0.7 );
-  glVertex3f( -0.5, -0.5, -0.7 );
-  glEnd();
- 
-  // LADO SUPERIOR: lado azul
-  glBegin(GL_POLYGON);
-  glColor3f(   0.0,  0.0,  1.0 );
-  glVertex3f(  0.5,  0.5,  0.7 );
-  glVertex3f(  0.5,  0.5, -0.7 );
-  glVertex3f( -0.5,  0.5, -0.7 );
-  glVertex3f( -0.5,  0.5,  0.7 );
-  glEnd();
- 
-  // LADO INFERIOR: lado rojo
-  glBegin(GL_POLYGON);
-  glColor3f(   1.0,  0.0,  0.0 );
-  glVertex3f(  0.5, -0.5, -0.7 );
-  glVertex3f(  0.5, -0.5,  0.7 );
-  glVertex3f( -0.5, -0.5,  0.7 );
-  glVertex3f( -0.5, -0.5, -0.7 );
-  glEnd();
-}
 
 // Funci�n que se ejecuta cuando el sistema no esta ocupado
 void Idle (void){
@@ -285,50 +211,89 @@ void Reescalar(int w, int h) {
 movementCamara -> 
 */
 void movementCamara(int key, int x, int y){
-  cambiarMovimiento(key);
-  if (!isRotar){
-    //Movimiento de la camara fijo
-    if (key == GLUT_KEY_RIGHT)
-      paneoEjeX -= 0.1f;
-   
-    else if (key == GLUT_KEY_LEFT)
-      paneoEjeX += 0.1f;
-  
+  switch (tipoVision){
+  case 'p':
+    paneo(key);
+    break;
+
+  case 't':
+    travellingDolly(key);
+    break;
+
+  default:
+    //no hagas nada
+    break;
+  }
+ 
+}
+
+void movimietoLibreCamara(int key){
+    if (key == GLUT_KEY_UP)
+      paneoEjeY +=0.1f;
+
     else if (key == GLUT_KEY_DOWN)
       paneoEjeY -=0.1f;
-  
-    else if (key == GLUT_KEY_UP)
-     paneoEjeY +=0.1f;
-  }else{
-    //Movimiento de la camara libre
-    if (key == GLUT_KEY_RIGHT)
-      rotarEjeX -= 0.1f;
-   
+
     else if (key == GLUT_KEY_LEFT)
-      rotarEjeX += 0.1f;
-  
-    else if (key == GLUT_KEY_DOWN)
-      rotarEjeZ -=0.1f;
-  
-    else if (key == GLUT_KEY_UP)
-     rotarEjeZ +=0.1f;
-  }
-  glutPostRedisplay();//  Solicitar actualización de visualización
+      paneoEjeZ += 0.1f;  
+
+    else if (key == GLUT_KEY_RIGHT)
+      paneoEjeZ -= 0.1f;
+  glutPostRedisplay();//  Solicitar actualización de visualización 
 }
 
 /*
-cambiarMovimiento -> Si puslamos la tecla ZZ, cambiamos
-de modo de control de la camara.
- 1.- Movimiento de la camara punto fijo.
- 2.- Movimiento de la camara libre.
+  travellingDolly --> 
 */
-void cambiarMovimiento(int key){
- if (key == GLUT_KEY_F1){
-    if (isRotar) isRotar=false;
-    else  isRotar=true;
- }
- 
+void travellingDolly(int key){
+    if (key == GLUT_KEY_UP)
+      paneoEjeY +=0.1f;
+
+    else if (key == GLUT_KEY_DOWN)
+      paneoEjeY -=0.1f;
+
+    else if (key == GLUT_KEY_LEFT)
+      paneoEjeZ += 0.1f;  
+
+    else if (key == GLUT_KEY_RIGHT)
+      paneoEjeZ -= 0.1f;
+  glutPostRedisplay();//  Solicitar actualización de visualización  
 }
+
+/*
+paneo + tilt --> movimiento del ojo
+  gluLookAt(vector[0],vector[1],vector[2]  ,paneoEjeX,paneoEjeY,paneoEjeZ,  0.0f,1.0f,0.0f);
+*/
+void paneo(int key){      
+    if (key == GLUT_KEY_UP)
+      paneoEjeY +=0.1f;
+
+    else if (key == GLUT_KEY_DOWN)
+      paneoEjeY -=0.1f;
+
+    else if (key == GLUT_KEY_LEFT)
+      paneoEjeZ += 0.1f;  
+
+    else if (key == GLUT_KEY_RIGHT)
+      paneoEjeZ -= 0.1f;
+  glutPostRedisplay();//  Solicitar actualización de visualización  
+}
+
+
+void detectaTecla(unsigned char caracter, int x, int y){
+  if(caracter == 'p'){
+    tipoVision='p';
+  //}else if(caracter =='t'){
+  }else if(caracter == 't'){
+   // printf("caracter= %c",caracter);
+    tipoVision='t';
+  }else if(caracter=='l'){
+    tipoVision='l';
+  }
+  printf("caracter= %c\n",caracter);
+
+}
+
 // ----------------------------------------------------------
 // Función “main()”
 // ----------------------------------------------------------
@@ -349,7 +314,8 @@ int main(int argc, char* argv[]){
   // Funciones de retrollamada
   glutDisplayFunc(Display);
   //glutSpecialFunc(specialKeys);
-  glutSpecialFunc(movementCamara);
+  glutKeyboardFunc(detectaTecla);
+  glutSpecialFunc(movementCamara);  
   glutReshapeFunc(Reescalar); 
 
   //  Pasar el control de eventos a GLUT

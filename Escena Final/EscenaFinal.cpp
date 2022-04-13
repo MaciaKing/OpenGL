@@ -538,6 +538,7 @@ int main(int argc, char* argv[]){
   glutDisplayFunc(Display);
   //glutSpecialFunc(specialKeys);
   glutSpecialFunc(movementCamara);
+ // glutKeyboardFunc();
   glutReshapeFunc(Reescalar); 
 
   //  Pasar el control de eventos a GLUT
