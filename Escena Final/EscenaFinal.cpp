@@ -6,6 +6,7 @@
 #include <GL/glut.h>
 #include <GL/gl.h>
 #include <GL/glu.h>
+#include <stdio.h>
 const int W_WIDTH = 500; // Tama�o incial de la ventana
 const int W_HEIGHT = 500;
 GLfloat paneoEjeX=1.0f;
@@ -20,6 +21,7 @@ GLfloat aux=0.0f;
 
 bool isRotar=false;
 
+GLfloat anguloBrazoAereo=0.0f;
 
 // ----------------------------------------------------------
 // Funciones 
@@ -35,6 +37,8 @@ void plano();
 void cambiarMovimiento(int key);
 void lampara();
 void rotar();
+void moverBrazoAereo();
+void moverLampara();
 
 // Funci�n que visualiza la escena OpenGL
 void Display (void){
@@ -49,6 +53,7 @@ void Display (void){
   
   //glRotatef(aux,0.0f,1.0f,0.0f);
   rotar();
+ // gluLookAt(0.0f,0.0f,0.0f, 0.0f,-1.0f,0.0f, 1.0f,0.0f,0.0f); //define una transformacion visual
 
 
  /* gluPerspective(90.0f,1.0f,0.0f,10.0f);
@@ -66,8 +71,8 @@ void Display (void){
 
 void rotar(){
   aux+=0.5f;
-  //glRotatef(aux,0.0f,1.0f,0.0f);
-  glRotatef(aux,1.0f,0.0f,0.0f);
+  glRotatef(aux,0.0f,1.0f,0.0f);
+  //glRotatef(aux,1.0f,0.0f,0.0f);
   glutPostRedisplay();//  Solicitar actualización de visualización
 
 }
@@ -210,9 +215,12 @@ glEnd();
 glPopMatrix();
  //FIN BASE AEREA
 
+glRotatef (anguloBrazoAereo, 1.0f, 0.0f, 0.0f);	///////////////////
 //BRAZO AEREO
  glPushMatrix();
- glTranslatef(-0.01f,0.35f,0.0f);
+ //glTranslatef(-0.01f,0.45f,0.02f);
+  glTranslatef(-0.01f,0.35f,0.02f);
+
 glBegin(GL_POLYGON);
     glColor3f(   0.0,  1.0, 1.0 );
     //Cara Un costat
@@ -254,20 +262,51 @@ glPopMatrix();
 glPushMatrix();
  glColor3f(0.0f,1.0f,0.0f);
  glRotatef(90,1.0f,0.0f,0.0f);     // ROTACION LAMPARA
-// glTranslatef(0.0f,0.0f,-0.6f);
- glTranslatef(0.0f,0.0f,-0.74f);
+ glTranslatef(0.0f,0.040f,-0.74f);
 
  GLUquadric *quad1;
  quad1 = gluNewQuadric();
- gluCylinder(quad1,0.01,0.01,0.1,25,25);
+ gluCylinder(quad1,0.005,0.005,0.1,25,25);
+glPopMatrix();
+
+glTranslatef(0.0f,0.74f,-0.03f);
+glPushMatrix();
+ glColor3f(0.0f,1.0f,1.0f);
+ GLUquadric *quad2;
+ quad2 = gluNewQuadric();
+ gluCylinder(quad2,0.005,0.005,0.1,25,25);
 glPopMatrix();
 //FIN MINI BRAZO AEREO
 
-//LAMPARA
 
+//LAMPARA 
+glPushMatrix(); 
+ glColor3f(1.0f,1.0f,1.0f);
+ glTranslatef(0.0f,0.0f,-0.05f);   
+ //glRotatef(90.0f,1.0f,0.0f,0.0f);
+ glutSolidCone(0.1f,0.1f,32,20);
+ //Esfera de luz
+  glTranslatef(0.0f,0.0f,0.01f);  
+ 	glColor3f(1,0,0);
+	GLUquadric *quad3;
+	quad3 = gluNewQuadric();
+	gluSphere(quad3,0.05f,100,20);
+glPopMatrix();
 //FIN LAMPARA
 
+//moverBrazoAereo();
 }
+
+void moverBrazoAereo(){
+  anguloBrazoAereo-=0.05f;
+  printf("angulo: %f\n",anguloBrazoAereo);
+  glutPostRedisplay(); //  Solicitar actualización de visualización
+
+}
+
+/*void moverLampara(){
+
+}*/
 
 void Esfera(){
 	glColor3f(1,0,0);
