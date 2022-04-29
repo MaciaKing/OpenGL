@@ -1,12 +1,16 @@
+/*
+Fer pull i me dona igual cambis en local
+git fetch
+git reset
+git merge origin
+*/
+
 #include <GL/glut.h>
 #include <GL/gl.h>
 #include <GL/glu.h>
 #include <stdio.h>
 const int W_WIDTH = 500; // Tama�o incial de la ventana
 const int W_HEIGHT = 500;
-GLfloat paneoEjeX=1.0f;
-GLfloat paneoEjeY=1.0f;
-GLfloat paneoEjeZ=-1.0f;
 
 GLfloat rotarEjeX=1.0f;
 GLfloat rotarEjeY=1.0f;
@@ -62,9 +66,9 @@ void Display (void){
   
   //glRotatef(aux,0.0f,1.0f,0.0f);
   //rotar();
-  //gluLookAt(0.0f,0.0f,-0.5f, 0.0f,0.0f,0.0f, 0.0f,1.0f,0.0f); //mirada al centro de la lampara
-  gluLookAt(0.6f,0.0f,-0.5f, 0.0f,0.0f,0.0f, 0.0f,1.0f,0.0f); //mirada desde un lado
-
+ // gluLookAt(0.0f,0.0f,-0.5f, 0.0f,0.0f,0.0f, 0.0f,1.0f,0.0f); //mirada al centro de la lampara
+ // gluLookAt(0.6f,0.0f,-0.5f, 0.0f,0.0f,0.0f, 0.0f,1.0f,0.0f); //mirada desde un lado
+   gluLookAt(0.5f,0.0f,0.0f, 0.0f,0.0f,0.0f, 0.0f,1.0f,0.0f);
 
  /* gluPerspective(90.0f,1.0f,0.0f,10.0f);
   //gluLookAt(1.0f,-1.0f,1.0f,0.0f,0.0f,0.0f,1.0f,1.0f,1.0f); //define una transformacion visual
@@ -296,11 +300,11 @@ glPushMatrix();
  if(m.movAnguloX){
    glRotatef(m.rotarY,0.0f,1.0f,0.0f); 
    glRotatef(m.rotarX,1.0f,0.0f,0.0f);
-   printf("EJE X, angulo=%f\n",m.rotarX);
+   //printf("EJE X, angulo=%f\n",m.rotarX);
  }else{
    glRotatef(m.rotarX,1.0f,0.0f,0.0f); 
    glRotatef(m.rotarY,0.0f,1.0f,0.0f);  
-   printf("EJE Y, angulo=%f\n",m.rotarY);
+  // printf("EJE Y, angulo=%f\n",m.rotarY);
  }
     
  glutSolidCone(0.1f,0.1f,32,20);
@@ -579,7 +583,8 @@ void cambiarMovimiento(int key){
 }*/
 
 void movimientoLampara(int key,int x,int y){
-  if(movimiento=='m'){
+  //MOVIMIENTOS LAMPARA LUZ
+  if(movimiento=='m'){ 
      if (key == GLUT_KEY_RIGHT){
        m.movAnguloX=true;
        m.rotarX+=0.5f;
@@ -587,19 +592,33 @@ void movimientoLampara(int key,int x,int y){
    
     else if (key == GLUT_KEY_LEFT){
        m.movAnguloX=true;
-        m.rotarX-=0.5f;
+       m.rotarX-=0.5f;
     }
 
     else if (key == GLUT_KEY_DOWN){
       m.movAnguloX=false;//movimiento en y
-       m.rotarY-=0.5f;
+      m.rotarY-=0.5f;
     }
   
     else if (key == GLUT_KEY_UP){
       m.movAnguloX=false; //movimiento en y
-       m.rotarY+=0.5f;
+      m.rotarY+=0.5f;
     }
-     
+
+  //MOVIMIENTOS BRAZO   
+  }else if(movimiento=='b'){ 
+    if(key == GLUT_KEY_UP){
+      if(anguloBrazoAereo<0.5){
+        anguloBrazoAereo+=0.5f;
+      }
+      printf("anguloBrazoAereo --> %f\n",anguloBrazoAereo);
+    }else if(key == GLUT_KEY_DOWN){
+      if(anguloBrazoAereo>-11.5){
+        anguloBrazoAereo-=0.5f;
+      }      
+      printf("anguloBrazoAereo --> %f\n",anguloBrazoAereo);
+    }
+
   }
   //printf("anguloX= %f\n",anguloX);
   //printf("anguloY= %f\n",anguloY);
@@ -616,8 +635,10 @@ void detectaTecla(unsigned char caracter, int x, int y){
    // tipoVision='t';
   }else if(caracter=='l'){
     //tipoVision='l';
-  }else if(caracter=='m'){
-     movimiento='m';
+  }else if(caracter=='m'){ //Movimiento luz 
+    movimiento='m';
+  }else if(caracter=='b'){ //Movimiento brazo
+    movimiento='b';
   }
   printf("caracter= %c\n",caracter);
 }
