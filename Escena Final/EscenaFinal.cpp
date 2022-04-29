@@ -1,8 +1,3 @@
-// Etapa1.cpp
-// Fichero principal 
-//g++ -o Etapa1 Etapa1.cpp -lGLU -lGL -lglut
-
-////////////////////////////////////////////////////
 #include <GL/glut.h>
 #include <GL/gl.h>
 #include <GL/glu.h>
@@ -20,7 +15,18 @@ GLfloat rotarEjeZ=-1.0f;
 GLfloat aux=0.0f;
 
 bool isRotar=false;
+char movimiento='m'; //m= movimiento de la lampara
+bool anguloX=true;
+bool anguloY=false;
 
+struct movimientoL{
+  bool movAnguloX=true; // si es true mueve eje x, si es false eje y
+  //char signo='+';  // puede ser + o -
+  GLfloat rotarX=0.0f;
+  GLfloat rotarY=0.0f;
+};
+
+struct movimientoL m;
 GLfloat anguloBrazoAereo=0.0f;
 
 // ----------------------------------------------------------
@@ -39,6 +45,9 @@ void lampara();
 void rotar();
 void moverBrazoAereo();
 void moverLampara();
+void detectaTecla(unsigned char caracter, int x, int y);
+void movimientoLampara(int key,int x,int y);
+
 
 // Funci�n que visualiza la escena OpenGL
 void Display (void){
@@ -52,8 +61,9 @@ void Display (void){
   
   
   //glRotatef(aux,0.0f,1.0f,0.0f);
-  rotar();
- // gluLookAt(0.0f,0.0f,0.0f, 0.0f,-1.0f,0.0f, 1.0f,0.0f,0.0f); //define una transformacion visual
+  //rotar();
+  //gluLookAt(0.0f,0.0f,-0.5f, 0.0f,0.0f,0.0f, 0.0f,1.0f,0.0f); //mirada al centro de la lampara
+  gluLookAt(0.6f,0.0f,-0.5f, 0.0f,0.0f,0.0f, 0.0f,1.0f,0.0f); //mirada desde un lado
 
 
  /* gluPerspective(90.0f,1.0f,0.0f,10.0f);
@@ -282,8 +292,17 @@ glPopMatrix();
 //LAMPARA 
 glPushMatrix(); 
  glColor3f(1.0f,1.0f,1.0f);
- glTranslatef(0.0f,0.0f,-0.05f);   
- //glRotatef(90.0f,1.0f,0.0f,0.0f);
+ glTranslatef(0.0f,0.0f,-0.05f);
+ if(m.movAnguloX){
+   glRotatef(m.rotarY,0.0f,1.0f,0.0f); 
+   glRotatef(m.rotarX,1.0f,0.0f,0.0f);
+   printf("EJE X, angulo=%f\n",m.rotarX);
+ }else{
+   glRotatef(m.rotarX,1.0f,0.0f,0.0f); 
+   glRotatef(m.rotarY,0.0f,1.0f,0.0f);  
+   printf("EJE Y, angulo=%f\n",m.rotarY);
+ }
+    
  glutSolidCone(0.1f,0.1f,32,20);
  //Esfera de luz
   glTranslatef(0.0f,0.0f,0.01f);  
@@ -511,6 +530,7 @@ void Reescalar(int w, int h) {
 /*
 movementCamara -> 
 */
+/*
 void movementCamara(int key, int x, int y){
   cambiarMovimiento(key);
   if (!isRotar){
@@ -542,20 +562,66 @@ void movementCamara(int key, int x, int y){
   }
   glutPostRedisplay();//  Solicitar actualización de visualización
 }
-
+*/
 /*
 cambiarMovimiento -> Si puslamos la tecla ZZ, cambiamos
 de modo de control de la camara.
  1.- Movimiento de la camara punto fijo.
  2.- Movimiento de la camara libre.
 */
+/*
 void cambiarMovimiento(int key){
  if (key == GLUT_KEY_F1){
     if (isRotar) isRotar=false;
     else  isRotar=true;
  }
  
+}*/
+
+void movimientoLampara(int key,int x,int y){
+  if(movimiento=='m'){
+     if (key == GLUT_KEY_RIGHT){
+       m.movAnguloX=true;
+       m.rotarX+=0.5f;
+     }
+   
+    else if (key == GLUT_KEY_LEFT){
+       m.movAnguloX=true;
+        m.rotarX-=0.5f;
+    }
+
+    else if (key == GLUT_KEY_DOWN){
+      m.movAnguloX=false;//movimiento en y
+       m.rotarY-=0.5f;
+    }
+  
+    else if (key == GLUT_KEY_UP){
+      m.movAnguloX=false; //movimiento en y
+       m.rotarY+=0.5f;
+    }
+     
+  }
+  //printf("anguloX= %f\n",anguloX);
+  //printf("anguloY= %f\n",anguloY);
+  //printf("\n\n");
+  glutPostRedisplay();//  Solicitar actualización de visualización  
 }
+
+void detectaTecla(unsigned char caracter, int x, int y){
+  if(caracter == 'p'){
+   // tipoVision='p';
+  //}else if(caracter =='t'){
+  }else if(caracter == 't'){
+   // printf("caracter= %c",caracter);
+   // tipoVision='t';
+  }else if(caracter=='l'){
+    //tipoVision='l';
+  }else if(caracter=='m'){
+     movimiento='m';
+  }
+  printf("caracter= %c\n",caracter);
+}
+
 // ----------------------------------------------------------
 // Función “main()”
 // ----------------------------------------------------------
@@ -575,8 +641,8 @@ int main(int argc, char* argv[]){
 
   // Funciones de retrollamada
   glutDisplayFunc(Display);
-  //glutSpecialFunc(specialKeys);
-  glutSpecialFunc(movementCamara);
+  glutSpecialFunc(movimientoLampara);
+  glutKeyboardFunc(detectaTecla);
  // glutKeyboardFunc();
   glutReshapeFunc(Reescalar); 
 
