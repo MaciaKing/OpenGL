@@ -1,0 +1,15 @@
+Movimientos lampara:
+
+	- Tecla b: Se muevo el brazo de la lampara:
+		- Tecla UP
+		- Tecla DOWN
+		
+	- Tecla m: Se mueve el foco de luz y un brazo pequeño que tiene:
+		- Tecla UP
+		- Tecla DOWN
+		- Tecla RIGHT
+		- Tecla LEFT
+		
+	- Tecla t: Se mueve todo el objeto.
+		- Tecla RIGHT
+		- Tecla LEFT

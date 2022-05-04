@@ -9,6 +9,7 @@ git merge origin
 #include <GL/gl.h>
 #include <GL/glu.h>
 #include <stdio.h>
+#include <cmath> //Para calcular valores absolutos de variables
 const int W_WIDTH = 500; // Tama�o incial de la ventana
 const int W_HEIGHT = 500;
 
@@ -22,6 +23,7 @@ bool isRotar=false;
 char movimiento='m'; //m= movimiento de la lampara
 bool anguloX=true;
 bool anguloY=false;
+GLfloat rotarTodo=0.0f;
 
 struct movimientoL{
   bool movAnguloX=true; // si es true mueve eje x, si es false eje y
@@ -46,7 +48,7 @@ void Esfera();
 void plano();
 void cambiarMovimiento(int key);
 void lampara();
-void rotar();
+//void rotar();
 void moverBrazoAereo();
 void moverLampara();
 void detectaTecla(unsigned char caracter, int x, int y);
@@ -66,9 +68,11 @@ void Display (void){
   
   //glRotatef(aux,0.0f,1.0f,0.0f);
   //rotar();
- // gluLookAt(0.0f,0.0f,-0.5f, 0.0f,0.0f,0.0f, 0.0f,1.0f,0.0f); //mirada al centro de la lampara
- // gluLookAt(0.6f,0.0f,-0.5f, 0.0f,0.0f,0.0f, 0.0f,1.0f,0.0f); //mirada desde un lado
-   gluLookAt(0.5f,0.0f,0.0f, 0.0f,0.0f,0.0f, 0.0f,1.0f,0.0f);
+  //gluLookAt(0.0f,0.0f,-0.5f, 0.0f,0.0f,0.0f, 0.0f,1.0f,0.0f); //mirada al centro de la lampara
+  gluLookAt(0.6f,0.0f,-0.5f, 0.0f,0.0f,0.0f, 0.0f,1.0f,0.0f); //mirada desde un lado
+  //gluLookAt(0.5f,0.0f,0.0f, 0.0f,0.0f,0.0f, 0.0f,1.0f,0.0f); //mirada lado perfecto
+  // gluLookAt(0.0f,0.0f,0.5f, 0.0f,0.0f,0.0f, 0.0f,1.0f,0.0f); //mirada desde atras perfecta
+  //gluLookAt(0.01f,0.2f,0.0f, 0.0f,0.0f,0.0f, 0.0f,1.0f,0.0f); //Vista de arriba perfecta
 
  /* gluPerspective(90.0f,1.0f,0.0f,10.0f);
   //gluLookAt(1.0f,-1.0f,1.0f,0.0f,0.0f,0.0f,1.0f,1.0f,1.0f); //define una transformacion visual
@@ -82,14 +86,14 @@ void Display (void){
   glFlush();
   glutSwapBuffers();
 }
-
+/*
 void rotar(){
   aux+=0.5f;
   glRotatef(aux,0.0f,1.0f,0.0f);
   //glRotatef(aux,1.0f,0.0f,0.0f);
   glutPostRedisplay();//  Solicitar actualización de visualización
 
-}
+}*/
 
 void plano(){
   // glRectf(-0.2f, 0.0f, 0.2f, 0.5f);
@@ -103,6 +107,8 @@ void plano(){
 }
 
 void lampara(){
+  glRotatef(rotarTodo,0.0f,1.0f,0.0f);
+
   //Base Lampara
   glPushMatrix();
   glRotatef(-90.0f,1.0f,0.0f,0.0f); 
@@ -272,6 +278,8 @@ glEnd();
 glPopMatrix();
 //FIN BRAZO AEREO
 
+
+
 //MINI BRAZO AEREO
 glPushMatrix();
  glColor3f(0.0f,1.0f,0.0f);
@@ -282,6 +290,15 @@ glPushMatrix();
  quad1 = gluNewQuadric();
  gluCylinder(quad1,0.005,0.005,0.1,25,25);
 glPopMatrix();
+
+//Posible movimiento del objeto
+ if(m.movAnguloX){
+   glRotatef(m.rotarX,1.0f,0.0f,0.0f);
+   printf("FALSE\n");
+ }else{
+   glRotatef(m.rotarY,0.0f,1.0f,0.0f);  
+   printf("TRUEEEE\n");
+ }
 
 glTranslatef(0.0f,0.74f,-0.03f);
 glPushMatrix();
@@ -297,15 +314,7 @@ glPopMatrix();
 glPushMatrix(); 
  glColor3f(1.0f,1.0f,1.0f);
  glTranslatef(0.0f,0.0f,-0.05f);
- if(m.movAnguloX){
-   glRotatef(m.rotarY,0.0f,1.0f,0.0f); 
-   glRotatef(m.rotarX,1.0f,0.0f,0.0f);
-   //printf("EJE X, angulo=%f\n",m.rotarX);
- }else{
-   glRotatef(m.rotarX,1.0f,0.0f,0.0f); 
-   glRotatef(m.rotarY,0.0f,1.0f,0.0f);  
-  // printf("EJE Y, angulo=%f\n",m.rotarY);
- }
+
     
  glutSolidCone(0.1f,0.1f,32,20);
  //Esfera de luz
@@ -319,13 +328,13 @@ glPopMatrix();
 
 //moverBrazoAereo();
 }
-
+/*
 void moverBrazoAereo(){
   anguloBrazoAereo-=0.05f;
   printf("angulo: %f\n",anguloBrazoAereo);
   glutPostRedisplay(); //  Solicitar actualización de visualización
 
-}
+}*/
 
 /*void moverLampara(){
 
@@ -586,43 +595,53 @@ void movimientoLampara(int key,int x,int y){
   //MOVIMIENTOS LAMPARA LUZ
   if(movimiento=='m'){ 
      if (key == GLUT_KEY_RIGHT){
-       m.movAnguloX=true;
-       m.rotarX+=0.5f;
+      if(abs(m.rotarY)<6.5 || m.rotarY==6.5){
+       m.movAnguloX=false;//movimiento en y
+       m.rotarY-=0.5f;
+      }
      }
    
     else if (key == GLUT_KEY_LEFT){
-       m.movAnguloX=true;
-       m.rotarX-=0.5f;
+      if((abs(m.rotarY)<6.5) || m.rotarY==-6.5){
+       m.movAnguloX=false; //movimiento en y
+       m.rotarY+=0.5f;
+    }
     }
 
     else if (key == GLUT_KEY_DOWN){
-      m.movAnguloX=false;//movimiento en y
-      m.rotarY-=0.5f;
+      m.movAnguloX=true;
+      m.rotarX+=0.5f;
+      printf("DOOOOWN\n");
     }
-  
+    
     else if (key == GLUT_KEY_UP){
-      m.movAnguloX=false; //movimiento en y
-      m.rotarY+=0.5f;
+      m.movAnguloX=true;
+      m.rotarX-=0.5f;   
+      printf("UUUUUP\n");   
     }
-
+    
+    printf("rotarX = %f, rotarY= %f\n",m.rotarX,m.rotarY);
   //MOVIMIENTOS BRAZO   
   }else if(movimiento=='b'){ 
     if(key == GLUT_KEY_UP){
       if(anguloBrazoAereo<0.5){
         anguloBrazoAereo+=0.5f;
       }
-      printf("anguloBrazoAereo --> %f\n",anguloBrazoAereo);
+     // printf("anguloBrazoAereo --> %f\n",anguloBrazoAereo);
     }else if(key == GLUT_KEY_DOWN){
       if(anguloBrazoAereo>-11.5){
         anguloBrazoAereo-=0.5f;
       }      
-      printf("anguloBrazoAereo --> %f\n",anguloBrazoAereo);
+      //printf("anguloBrazoAereo --> %f\n",anguloBrazoAereo);
     }
-
+  //MOVIMIENTO TOTAL DEL OBJETO
+  }else if(movimiento=='t'){
+    if (key == GLUT_KEY_LEFT){
+          rotarTodo+=1.0f;      
+    }else if(key == GLUT_KEY_RIGHT){
+          rotarTodo-=1.0f;
+    }
   }
-  //printf("anguloX= %f\n",anguloX);
-  //printf("anguloY= %f\n",anguloY);
-  //printf("\n\n");
   glutPostRedisplay();//  Solicitar actualización de visualización  
 }
 
@@ -630,7 +649,7 @@ void detectaTecla(unsigned char caracter, int x, int y){
   if(caracter == 'p'){
    // tipoVision='p';
   //}else if(caracter =='t'){
-  }else if(caracter == 't'){
+  /*}else if(caracter == 't'){*/
    // printf("caracter= %c",caracter);
    // tipoVision='t';
   }else if(caracter=='l'){
@@ -639,6 +658,8 @@ void detectaTecla(unsigned char caracter, int x, int y){
     movimiento='m';
   }else if(caracter=='b'){ //Movimiento brazo
     movimiento='b';
+  }else if(caracter=='t'){
+    movimiento='t';
   }
   printf("caracter= %c\n",caracter);
 }
