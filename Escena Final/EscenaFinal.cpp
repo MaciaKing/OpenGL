@@ -68,8 +68,9 @@ void Display (void){
   
   //glRotatef(aux,0.0f,1.0f,0.0f);
   //rotar();
-  //gluLookAt(0.0f,0.0f,-0.5f, 0.0f,0.0f,0.0f, 0.0f,1.0f,0.0f); //mirada al centro de la lampara
-  gluLookAt(0.6f,0.0f,-0.5f, 0.0f,0.0f,0.0f, 0.0f,1.0f,0.0f); //mirada desde un lado
+  gluPerspective(0.0f,0.0f,1.0f,30.0f);
+  gluLookAt(0.0f,0.0f,-1.0f, 0.0f,0.0f,0.0f, 0.0f,2.0f,0.0f); //mirada al centro de la lampara
+  //gluLookAt(0.6f,0.0f,-0.5f, 0.0f,0.0f,0.0f, 0.0f,1.0f,0.0f); //mirada desde un lado
   //gluLookAt(0.5f,0.0f,0.0f, 0.0f,0.0f,0.0f, 0.0f,1.0f,0.0f); //mirada lado perfecto
   // gluLookAt(0.0f,0.0f,0.5f, 0.0f,0.0f,0.0f, 0.0f,1.0f,0.0f); //mirada desde atras perfecta
   //gluLookAt(0.01f,0.2f,0.0f, 0.0f,0.0f,0.0f, 0.0f,1.0f,0.0f); //Vista de arriba perfecta
@@ -80,8 +81,11 @@ void Display (void){
   //gluLookAt(rotateEjeX,rotateEjeY,rotateEjeZ,0.0f,0.0f,0.0f,0.0f,1.0f,0.0f);
   gluLookAt(0.0f,1.0f,rotarEjeZ,paneoEjeX,paneoEjeY,0.0f,0.0f,1.0f,0.0f);
 */
-  //ejesEspaciales();
- // plano();
+  glPushMatrix();
+  glTranslatef(1.0f,0.0f,0.0f);
+  ejesEspaciales();
+  glPopMatrix();
+  plano();
   lampara();
   glFlush();
   glutSwapBuffers();
@@ -96,13 +100,13 @@ void rotar(){
 }*/
 
 void plano(){
-  // glRectf(-0.2f, 0.0f, 0.2f, 0.5f);
+ //  glRectf(-0.2f, 0.0f, 0.2f, 0.5f);
+ glColor3f(   1.0,  0.0, 0.0 );
  glBegin(GL_POLYGON);
-  glColor3f(   1.0,  1.0, 1.0 );
   glVertex3f(  0.0,  0.0, 0.0 );
-  glVertex3f(  1.5,  0.0, 0.0 );
-  glVertex3f(  1.5,  0.0, 1.0 );
-  glVertex3f(  0.0,  0.0, 1.0 );
+  glVertex3f(  3.0,  0.0, 0.0 );
+  glVertex3f(  3.0,  0.0, 3.0 );
+  glVertex3f(  0.0,  0.0, 3.0 );
  glEnd();
 }
 
@@ -293,7 +297,7 @@ glPopMatrix();
 
 //Posible movimiento del objeto
  if(m.movAnguloX){
-   glRotatef(m.rotarX,1.0f,0.0f,0.0f);
+   glRotatef(m.rotarX,0.0f,0.0f,1.0f);
    printf("FALSE\n");
  }else{
    glRotatef(m.rotarY,0.0f,1.0f,0.0f);  
