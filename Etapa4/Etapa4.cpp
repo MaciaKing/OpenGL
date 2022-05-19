@@ -68,11 +68,7 @@ void Display (void){
   gluPerspective(90.0f,1.0f,0.0f,10.0f);
   if (tipoVision=='p'){//paneo
     gluLookAt(eye[0],eye[1],eye[2]  ,center[0],center[1],center[2],  0.0f,1.0f,0.0f);
-  }else if(tipoVision=='t'){ //camara gira entorno 0,0,0
-    calculaVectorUnitario();
-    eye[0]=eye[0]*vectorUnitario;
-    eye[1]=eye[1]*vectorUnitario;
-    eye[2]=eye[2]*vectorUnitario;
+  }else if(tipoVision=='t'){ //camara gira entorno en un punto
     gluLookAt(eye[0],eye[1],eye[2]  ,center[0],center[1],center[2],  0.0f,1.0f,0.0f);
   }else if (tipoVision=='l'){//camara libre
     gluLookAt(eye[0],eye[1],eye[2]  ,center[0],center[1],center[2],  0.0f,1.0f,0.0f); 
@@ -254,10 +250,7 @@ void movementCamara(int key, int x, int y){
 }
 
 void calculaVectorUnitario(){
-  // float unitario= sqrt(paneoEjeX+paneoEjeY+paneoEjeZ);
-   //vectorUnitario=sqrt(paneoEjeX+paneoEjeY+paneoEjeZ);;
   vectorUnitario=sqrt(center[0]+center[1]+center[2]);;
-
 }
 
 /*
