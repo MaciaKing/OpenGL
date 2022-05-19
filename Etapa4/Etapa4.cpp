@@ -8,12 +8,10 @@
 #include <GL/gl.h>
 #include <GL/glu.h>
 #include <stdio.h>
+#include <cmath> 
 
 const int W_WIDTH = 500; // Tama�o incial de la ventana
 const int W_HEIGHT = 500;
-GLfloat paneoEjeX=0.0f;
-GLfloat paneoEjeY=0.0f;
-GLfloat paneoEjeZ=0.0f;
 
 /*GLfloat rotarEjeX=1.0f;
 GLfloat rotarEjeY=1.0f;
@@ -27,9 +25,11 @@ GLfloat anguloRotacion=0.0f;
 
 bool isRotar=false;
 //Vector al que miramos (desde la camara)
-float vector[3]={2.0f,0.0f,0.0f};
+float center[3]={2.0f,0.0f,0.0f};
+float eye[3]={0.0f,1.0f,1.0f};
+float vectorUnitario=0;
 
-char tipoVision='p'; //p= paneo + tilt
+char tipoVision='l'; //p= paneo + tilt
                      //t= travelling/Dolly 
                      //l= movimiento libre de camara
 
@@ -48,31 +48,53 @@ void rotarCamara();
 //void detectaTecla(int caracter, int x, int y);
 void detectaTecla(unsigned char caracter, int x, int y);
 void paneo(int key);   
-void travellingDolly(int key);
-void movimietoLibreCamara(int key);
+void movimietoEnUnPunto(int key);
+void movimientoCamaraLibre(int key);
+
+void plano();
+void calculaVectorUnitario();
 
 
 
 // Funci�n que visualiza la escena OpenGL
 void Display (void){
   //  Borrar pantalla y Z-buffer
-  glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+  glEnable(GL_DEPTH_TEST);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
   // Resetear transformaciones
   glLoadIdentity();
 
   gluPerspective(90.0f,1.0f,0.0f,10.0f);
-  if (tipoVision='p'){
-    gluLookAt(vector[0],vector[1],vector[2]  ,paneoEjeX,paneoEjeY,paneoEjeZ,  0.0f,1.0f,0.0f);
-  }else if(tipoVision='t'){
-    gluLookAt(vector[0]+travellX,vector[1]+travellY,vector[2]+travellZ  ,paneoEjeX+travellX,paneoEjeY+travellY,paneoEjeZ+travellZ,  0.0f,1.0f,0.0f);
+  if (tipoVision=='p'){//paneo
+    gluLookAt(eye[0],eye[1],eye[2]  ,center[0],center[1],center[2],  0.0f,1.0f,0.0f);
+  }else if(tipoVision=='t'){ //camara gira entorno 0,0,0
+    calculaVectorUnitario();
+    eye[0]=eye[0]*vectorUnitario;
+    eye[1]=eye[1]*vectorUnitario;
+    eye[2]=eye[2]*vectorUnitario;
+    gluLookAt(eye[0],eye[1],eye[2]  ,center[0],center[1],center[2],  0.0f,1.0f,0.0f);
+  }else if (tipoVision=='l'){//camara libre
+    gluLookAt(eye[0],eye[1],eye[2]  ,center[0],center[1],center[2],  0.0f,1.0f,0.0f); 
   }
-
+  
   ejesEspaciales();
+  plano();
   glFlush();
   glutSwapBuffers();
 }
 
+void plano(){
+ //  glRectf(-0.2f, 0.0f, 0.2f, 0.5f);
+ glTranslatef(0.0f,0.0f,0.0f);
+ glColor3f(   1.0,  0.0, 0.0 );
+ glBegin(GL_POLYGON);
+  glVertex3f(  0.0,  0.0, 0.0 );
+  glVertex3f(  3.0,  0.0, 0.0 );
+  glVertex3f(  3.0,  0.0, 3.0 );
+  glVertex3f(  0.0,  0.0, 3.0 );
+ glEnd();
+}
 
 /*
 ejesEspaciales: Dibujamos los ejes espaciales.
@@ -217,8 +239,12 @@ void movementCamara(int key, int x, int y){
     break;
 
   case 't':
-    travellingDolly(key);
+   movimietoEnUnPunto(key);
     break;
+
+   case 'l':
+   movimientoCamaraLibre(key);
+   break;
 
   default:
     //no hagas nada
@@ -227,37 +253,34 @@ void movementCamara(int key, int x, int y){
  
 }
 
-void movimietoLibreCamara(int key){
-    if (key == GLUT_KEY_UP)
-      paneoEjeY +=0.1f;
+void calculaVectorUnitario(){
+  // float unitario= sqrt(paneoEjeX+paneoEjeY+paneoEjeZ);
+   //vectorUnitario=sqrt(paneoEjeX+paneoEjeY+paneoEjeZ);;
+  vectorUnitario=sqrt(center[0]+center[1]+center[2]);;
 
-    else if (key == GLUT_KEY_DOWN)
-      paneoEjeY -=0.1f;
-
-    else if (key == GLUT_KEY_LEFT)
-      paneoEjeZ += 0.1f;  
-
-    else if (key == GLUT_KEY_RIGHT)
-      paneoEjeZ -= 0.1f;
-  glutPostRedisplay();//  Solicitar actualización de visualización 
 }
 
 /*
-  travellingDolly --> 
+Movimiento de la camara en entorno al 
+punto 0,0,0
 */
-void travellingDolly(int key){
-    if (key == GLUT_KEY_UP)
-      paneoEjeY +=0.1f;
+void movimietoEnUnPunto(int key){
+    if (key == GLUT_KEY_UP){
+      eye[1] +=0.1f;
+      }
 
-    else if (key == GLUT_KEY_DOWN)
-      paneoEjeY -=0.1f;
+    else if (key == GLUT_KEY_DOWN){
+      eye[1] -=0.1f;
+      }
 
-    else if (key == GLUT_KEY_LEFT)
-      paneoEjeZ += 0.1f;  
+    else if (key == GLUT_KEY_LEFT){
+      eye[2] += 0.1f;  
+      }
 
-    else if (key == GLUT_KEY_RIGHT)
-      paneoEjeZ -= 0.1f;
-  glutPostRedisplay();//  Solicitar actualización de visualización  
+    else if (key == GLUT_KEY_RIGHT){
+      eye[2] -= 0.1f;
+      }
+  glutPostRedisplay();//  Solicitar actualización de visualización 
 }
 
 /*
@@ -266,32 +289,55 @@ paneo + tilt --> movimiento del ojo
 */
 void paneo(int key){      
     if (key == GLUT_KEY_UP)
-      paneoEjeY +=0.1f;
+      //paneoEjeY +=0.1f;
+      center[1] +=0.1f;
 
     else if (key == GLUT_KEY_DOWN)
-      paneoEjeY -=0.1f;
+     // paneoEjeY -=0.1f;
+     center[1]-=0.1f;
 
     else if (key == GLUT_KEY_LEFT)
-      paneoEjeZ += 0.1f;  
+     // paneoEjeZ += 0.1f;  
+     center[2]+= 0.1f;  
 
     else if (key == GLUT_KEY_RIGHT)
-      paneoEjeZ -= 0.1f;
+     // paneoEjeZ -= 0.1f;
+     center[2]-= 0.1f;
+
   glutPostRedisplay();//  Solicitar actualización de visualización  
 }
 
+void movimientoCamaraLibre(int key){   
+  if (key == GLUT_KEY_UP){
+    eye[0]+=0.1f;
+    center[0]+=0.1f;
+  }    
+  else if(key == GLUT_KEY_DOWN){
+    eye[0]-=0.1f;
+    center[0]-=0.1f;
+  }    
+  else if(key == GLUT_KEY_LEFT){
+     eye[2]-=0.1f;
+    center[2]-=0.1f;
+  }   
+  else if(key ==GLUT_KEY_RIGHT){
+     eye[2]+=0.1f;
+    center[2]+=0.1f;
+  }
+   
+  glutPostRedisplay();//  Solicitar actualización de visualización  
+}
 
 void detectaTecla(unsigned char caracter, int x, int y){
+
   if(caracter == 'p'){
     tipoVision='p';
-  //}else if(caracter =='t'){
   }else if(caracter == 't'){
-   // printf("caracter= %c",caracter);
     tipoVision='t';
   }else if(caracter=='l'){
     tipoVision='l';
   }
-  printf("caracter= %c\n",caracter);
-
+  printf("tipoVISION : %c\n",tipoVision);
 }
 
 // ----------------------------------------------------------

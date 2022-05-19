@@ -68,12 +68,14 @@ void Display (void){
   
   //glRotatef(aux,0.0f,1.0f,0.0f);
   //rotar();
-  gluPerspective(0.0f,0.0f,1.0f,30.0f);
-  gluLookAt(0.0f,0.0f,-1.0f, 0.0f,0.0f,0.0f, 0.0f,2.0f,0.0f); //mirada al centro de la lampara
-  //gluLookAt(0.6f,0.0f,-0.5f, 0.0f,0.0f,0.0f, 0.0f,1.0f,0.0f); //mirada desde un lado
-  //gluLookAt(0.5f,0.0f,0.0f, 0.0f,0.0f,0.0f, 0.0f,1.0f,0.0f); //mirada lado perfecto
+  gluPerspective(100.0f,W_WIDTH/W_HEIGHT,0.1f,20.0f);
+  //gluLookAt(0.0f,1.0f,-1.0f, 0.0f,0.0f,0.0f, 0.0f,2.0f,0.0f); //mirada al centro de la lampara
+  //gluLookAt(0.0f,0.0f,-1.0f, 0.0f,0.0f,0.0f, 0.0f,2.0f,0.0f); //mirada al centro de la lampara
+ // gluLookAt(0.6f,0.0f,-0.5f, 0.0f,0.0f,0.0f, 0.0f,1.0f,0.0f); //mirada desde un lado
+  gluLookAt(2.5f,0.2f,1.0f, 0.0f,0.0f,0.0f, 0.0f,1.0f,0.0f); //Escena final
+  //gluLookAt(2.5f,0.5f,1.0f, 0.0f,0.0f,0.0f, 0.0f,1.0f,0.0f);
   // gluLookAt(0.0f,0.0f,0.5f, 0.0f,0.0f,0.0f, 0.0f,1.0f,0.0f); //mirada desde atras perfecta
-  //gluLookAt(0.01f,0.2f,0.0f, 0.0f,0.0f,0.0f, 0.0f,1.0f,0.0f); //Vista de arriba perfecta
+  //gluLookAt(0.01f,-1.5f,0.0f, 0.0f,0.0f,0.0f, 0.0f,1.0f,0.0f); //Vista de arriba perfecta
 
  /* gluPerspective(90.0f,1.0f,0.0f,10.0f);
   //gluLookAt(1.0f,-1.0f,1.0f,0.0f,0.0f,0.0f,1.0f,1.0f,1.0f); //define una transformacion visual
@@ -82,7 +84,7 @@ void Display (void){
   gluLookAt(0.0f,1.0f,rotarEjeZ,paneoEjeX,paneoEjeY,0.0f,0.0f,1.0f,0.0f);
 */
   glPushMatrix();
-  glTranslatef(1.0f,0.0f,0.0f);
+  //glTranslatef(1.0f,0.0f,0.0f);
   ejesEspaciales();
   glPopMatrix();
   plano();
@@ -101,7 +103,8 @@ void rotar(){
 
 void plano(){
  //  glRectf(-0.2f, 0.0f, 0.2f, 0.5f);
- glColor3f(   1.0,  0.0, 0.0 );
+ //glTranslatef(0.0f,0.0f,0.0f);
+ glColor3f(   1.0,  1.0, 0.0 );
  glBegin(GL_POLYGON);
   glVertex3f(  0.0,  0.0, 0.0 );
   glVertex3f(  3.0,  0.0, 0.0 );
@@ -111,15 +114,17 @@ void plano(){
 }
 
 void lampara(){
+  glTranslatef(1.8f,0.05f,1.0f);
   glRotatef(rotarTodo,0.0f,1.0f,0.0f);
+  glColor3f(1,1,1);
 
   //Base Lampara
   glPushMatrix();
   glRotatef(-90.0f,1.0f,0.0f,0.0f); 
-  glColor3f(1,0,0);
+  //glColor3f(1,0,0);
   glutSolidCone(0.1f,0.1f,32,20);
    glPushMatrix();
-    glColor3f(1.0f,1.0f,1.0f);
+    //glColor3f(1.0f,1.0f,1.0f);
     glTranslatef(0.0f,0.0f,-0.05f);
     GLUquadric *quad;
     quad = gluNewQuadric();
@@ -133,8 +138,8 @@ for(int i=0; i<=2;i=i+1){
   glPushMatrix();
   if(i==2){ //Movemos la segunda Pierna     
       glTranslatef(-0.05f,0.0f,0.0f); 
-      glColor3f(   0.0f,  0.0f, 1.0f );
-  }else glColor3f(   0.0f,  1.0f, 0.0f );
+      //glColor3f(   0.0f,  0.0f, 1.0f );
+  }//selse glColor3f(   0.0f,  1.0f, 0.0f );
   glBegin(GL_POLYGON);
     //glColor3f(   0.0,  1.0, 1.0 );
     //Cara Un costat
@@ -172,16 +177,16 @@ for(int i=0; i<=2;i=i+1){
  glPushMatrix();
  glTranslatef(0.0f,0.0f,-0.05f);//Lo movemos en el cetro de las dos columnas
  glBegin(GL_POLYGON);
-    glColor3f(   0.0,  0.0, 1.0 );
+    //glColor3f(   0.0,  0.0, 1.0 );
     //BASE
-    glColor3f(0.0f,0.0f,1.0f);
+   // glColor3f(0.0f,0.0f,1.0f);
     glVertex3f(  -0.1f, 0.3f, 0.0f );
     glVertex3f(  0.1f, 0.3f, 0.0f );         
     glVertex3f(  0.1f, 0.3f, 0.1f );     
     glVertex3f(  -0.1f, 0.3f, 0.1f ); 
 glEnd();
 glBegin(GL_POLYGON);
-    glColor3f(1.0f,0.0f,0.0f);
+   // glColor3f(1.0f,0.0f,0.0f);
     glVertex3f(  -0.1f, 0.3f, 0.1f ); 
     glVertex3f(  -0.1f, 0.35f, 0.1f );
     glVertex3f(   0.1f, 0.35f, 0.1f ); 
@@ -189,7 +194,7 @@ glBegin(GL_POLYGON);
 glEnd();
 
 glBegin(GL_POLYGON);
-    glColor3f(0.0f,0.0f,1.0f);
+   // glColor3f(0.0f,0.0f,1.0f);
     glVertex3f(  0.1f, 0.35f, 0.1f ); 
     glVertex3f(  0.1f, 0.3f, 0.1f );
     glVertex3f(  0.1f, 0.3f, 0.0f ); 
@@ -197,7 +202,7 @@ glBegin(GL_POLYGON);
 glEnd();
 
 glBegin(GL_POLYGON);
-    glColor3f(0.0f,0.0f,1.0f);
+   // glColor3f(0.0f,0.0f,1.0f);
     glVertex3f(  0.1f, 0.35f, 0.1f ); 
     glVertex3f(  0.1f, 0.3f, 0.1f );
     glVertex3f(  0.1f, 0.3f, 0.0f ); 
@@ -205,7 +210,7 @@ glBegin(GL_POLYGON);
 glEnd();
 
 glBegin(GL_POLYGON);
-    glColor3f(0.0f,1.0f,0.0f);
+   // glColor3f(0.0f,1.0f,0.0f);
     glVertex3f(  0.1f, 0.3f, 0.0f ); 
     glVertex3f(  0.1f, 0.35f, 0.0f );
     glVertex3f(  -0.1f, 0.35f, 0.0f ); 
@@ -213,7 +218,7 @@ glBegin(GL_POLYGON);
 glEnd();
 
 glBegin(GL_POLYGON);
-    glColor3f(0.0f,1.0f,0.0f);
+    //glColor3f(0.0f,1.0f,0.0f);
     glVertex3f(  0.1f, 0.3f, 0.0f ); 
     glVertex3f(  0.1f, 0.35f, 0.0f );
     glVertex3f(  -0.1f, 0.35f, 0.0f ); 
@@ -221,7 +226,7 @@ glBegin(GL_POLYGON);
 glEnd();
 
 glBegin(GL_POLYGON);
-    glColor3f(0.0f,1.0f,1.0f);
+    //glColor3f(0.0f,1.0f,1.0f);
     glVertex3f(  -0.1f, 0.35f, 0.0f ); 
     glVertex3f(  -0.1f, 0.3f, 0.0f );
     glVertex3f(  -0.1f, 0.3f, 0.1f ); 
@@ -229,7 +234,7 @@ glBegin(GL_POLYGON);
 glEnd();
     
 glBegin(GL_POLYGON);
-    glColor3f(   1.0,  1.0, 0.0 );
+    //glColor3f(   1.0,  1.0, 0.0 );
     //BASE
     glVertex3f(  -0.1f, 0.35f, 0.0f );
     glVertex3f(  0.1f, 0.35f, 0.0f );         
@@ -246,7 +251,7 @@ glRotatef (anguloBrazoAereo, 1.0f, 0.0f, 0.0f);	///////////////////
   glTranslatef(-0.01f,0.35f,0.02f);
 
 glBegin(GL_POLYGON);
-    glColor3f(   0.0,  1.0, 1.0 );
+   // glColor3f(   0.0,  1.0, 1.0 );
     //Cara Un costat
     glVertex3f(  0.0f, 0.0f, 0.0f );
     glVertex3f(  0.03f, 0.0f, 0.0f );         
@@ -286,7 +291,7 @@ glPopMatrix();
 
 //MINI BRAZO AEREO
 glPushMatrix();
- glColor3f(0.0f,1.0f,0.0f);
+ //glColor3f(0.0f,1.0f,0.0f);
  glRotatef(90,1.0f,0.0f,0.0f);     // ROTACION LAMPARA
  glTranslatef(0.0f,0.040f,-0.74f);
 
@@ -306,7 +311,7 @@ glPopMatrix();
 
 glTranslatef(0.0f,0.74f,-0.03f);
 glPushMatrix();
- glColor3f(0.0f,1.0f,1.0f);
+ //glColor3f(0.0f,1.0f,1.0f);
  GLUquadric *quad2;
  quad2 = gluNewQuadric();
  gluCylinder(quad2,0.005,0.005,0.1,25,25);
@@ -316,14 +321,14 @@ glPopMatrix();
 
 //LAMPARA 
 glPushMatrix(); 
- glColor3f(1.0f,1.0f,1.0f);
+ //glColor3f(1.0f,1.0f,1.0f);
  glTranslatef(0.0f,0.0f,-0.05f);
 
     
  glutSolidCone(0.1f,0.1f,32,20);
  //Esfera de luz
   glTranslatef(0.0f,0.0f,0.01f);  
- 	glColor3f(1,0,0);
+ 	//glColor3f(1,0,0);
 	GLUquadric *quad3;
 	quad3 = gluNewQuadric();
 	gluSphere(quad3,0.05f,100,20);
