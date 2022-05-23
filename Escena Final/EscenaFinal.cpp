@@ -35,11 +35,15 @@ struct movimientoL{
 struct movimientoL m;
 GLfloat anguloBrazoAereo=0.0f;
 
+char tipoVision='l';
+float center[3]={2.0f,0.0f,0.0f};
+float eye[3]={0.0f,1.0f,1.0f};
+bool movCamara=true;
+
 // ----------------------------------------------------------
 // Funciones 
 // ----------------------------------------------------------
 void Display(void);
-void movementCamara(int key);
 void Reescalar(int w, int h);
 void Cubo();
 void ejesEspaciales();
@@ -52,7 +56,11 @@ void lampara();
 void moverBrazoAereo();
 void moverLampara();
 void detectaTecla(unsigned char caracter, int x, int y);
-void movimientoLampara(int key,int x,int y);
+void movimientoLampara(int key/*,int x,int y*/);
+void movementCamara(int key);
+void paneo(int key);  
+void movimientoCamaraLibre(int key);  
+void movimietoEnUnPunto(int key);
 
 
 // Funci�n que visualiza la escena OpenGL
@@ -65,8 +73,18 @@ void Display (void){
   glLoadIdentity();
   //glTranslatef(aux,0.0f,0.0f);
   
-  
-  //glRotatef(aux,0.0f,1.0f,0.0f);
+  //CAMARA
+  gluPerspective(90.0f,1.0f,0.0f,10.0f);
+  if (tipoVision=='p'){//paneo
+    gluLookAt(eye[0],eye[1],eye[2]  ,center[0],center[1],center[2],  0.0f,1.0f,0.0f);
+  }else if(tipoVision=='t'){ //camara gira entorno en un punto
+    gluLookAt(eye[0],eye[1],eye[2]  ,center[0],center[1],center[2],  0.0f,1.0f,0.0f);
+  }else if (tipoVision=='o'){//camara libre
+    gluLookAt(eye[0],eye[1],eye[2]  ,center[0],center[1],center[2],  0.0f,1.0f,0.0f); 
+  }
+  //FIN CAMARA
+
+  /*//glRotatef(aux,0.0f,1.0f,0.0f);
   //rotar();
   gluPerspective(100.0f,W_WIDTH/W_HEIGHT,0.1f,20.0f);
   //gluLookAt(0.0f,1.0f,-1.0f, 0.0f,0.0f,0.0f, 0.0f,2.0f,0.0f); //mirada al centro de la lampara
@@ -303,10 +321,10 @@ glPopMatrix();
 //Posible movimiento del objeto
  if(m.movAnguloX){
    glRotatef(m.rotarX,0.0f,0.0f,1.0f);
-   printf("FALSE\n");
+   //printf("FALSE\n");
  }else{
    glRotatef(m.rotarY,0.0f,1.0f,0.0f);  
-   printf("TRUEEEE\n");
+   //printf("TRUEEEE\n");
  }
 
 glTranslatef(0.0f,0.74f,-0.03f);
@@ -549,58 +567,17 @@ void Reescalar(int w, int h) {
     glutPostRedisplay();
 }
 
-/*
-movementCamara -> 
-*/
-/*
-void movementCamara(int key, int x, int y){
-  cambiarMovimiento(key);
-  if (!isRotar){
-    //Movimiento de la camara fijo
-    if (key == GLUT_KEY_RIGHT)
-      paneoEjeX -= 0.1f;
-   
-    else if (key == GLUT_KEY_LEFT)
-      paneoEjeX += 0.1f;
+void movimientoCamaraOLampara(int key,int x,int y){
+/* if(key== 'p' || key== 'o' || key== 'l') movementCamara(key);
+ else movimientoLampara(key);
+ */
+  if(movCamara){ // La tecla es para la camara
+    movementCamara(key);
+  }else  movimientoLampara(key);//el movimiento es para lampara
   
-    else if (key == GLUT_KEY_DOWN)
-      paneoEjeY -=0.1f;
-  
-    else if (key == GLUT_KEY_UP)
-     paneoEjeY +=0.1f;
-  }else{
-    //Movimiento de la camara libre
-    if (key == GLUT_KEY_RIGHT)
-      rotarEjeX -= 0.1f;
-   
-    else if (key == GLUT_KEY_LEFT)
-      rotarEjeX += 0.1f;
-  
-    else if (key == GLUT_KEY_DOWN)
-      rotarEjeZ -=0.1f;
-  
-    else if (key == GLUT_KEY_UP)
-     rotarEjeZ +=0.1f;
-  }
-  glutPostRedisplay();//  Solicitar actualización de visualización
 }
-*/
-/*
-cambiarMovimiento -> Si puslamos la tecla ZZ, cambiamos
-de modo de control de la camara.
- 1.- Movimiento de la camara punto fijo.
- 2.- Movimiento de la camara libre.
-*/
-/*
-void cambiarMovimiento(int key){
- if (key == GLUT_KEY_F1){
-    if (isRotar) isRotar=false;
-    else  isRotar=true;
- }
- 
-}*/
 
-void movimientoLampara(int key,int x,int y){
+void movimientoLampara(int key/*,int x,int y*/){
   //MOVIMIENTOS LAMPARA LUZ
   if(movimiento=='m'){ 
      if (key == GLUT_KEY_RIGHT){
@@ -620,16 +597,16 @@ void movimientoLampara(int key,int x,int y){
     else if (key == GLUT_KEY_DOWN){
       m.movAnguloX=true;
       m.rotarX+=0.5f;
-      printf("DOOOOWN\n");
+      //printf("DOOOOWN\n");
     }
     
     else if (key == GLUT_KEY_UP){
       m.movAnguloX=true;
       m.rotarX-=0.5f;   
-      printf("UUUUUP\n");   
+     // printf("UUUUUP\n");   
     }
     
-    printf("rotarX = %f, rotarY= %f\n",m.rotarX,m.rotarY);
+   // printf("rotarX = %f, rotarY= %f\n",m.rotarX,m.rotarY);
   //MOVIMIENTOS BRAZO   
   }else if(movimiento=='b'){ 
     if(key == GLUT_KEY_UP){
@@ -656,21 +633,111 @@ void movimientoLampara(int key,int x,int y){
 
 void detectaTecla(unsigned char caracter, int x, int y){
   if(caracter == 'p'){
-   // tipoVision='p';
-  //}else if(caracter =='t'){
-  /*}else if(caracter == 't'){*/
-   // printf("caracter= %c",caracter);
-   // tipoVision='t';
+   tipoVision='p';
+   movCamara=true;
   }else if(caracter=='l'){
-    //tipoVision='l';
+    tipoVision='l';
+    movCamara=true;
+  }else if(caracter=='o'){
+    tipoVision='o';
+    movCamara=true;
   }else if(caracter=='m'){ //Movimiento luz 
     movimiento='m';
+    movCamara=false;
   }else if(caracter=='b'){ //Movimiento brazo
     movimiento='b';
+    movCamara=false;
   }else if(caracter=='t'){
     movimiento='t';
+    movCamara=false;
   }
   printf("caracter= %c\n",caracter);
+}
+
+//CAMARA
+void movementCamara(int key/*, int x, int y*/){
+  switch (tipoVision){
+  case 'p':
+    paneo(key);
+    break;
+
+  case 't':
+   movimietoEnUnPunto(key);
+    break;
+
+   case 'o':
+   movimientoCamaraLibre(key);
+   break;
+
+  default:
+    //no hagas nada
+    break;
+  } 
+}
+
+void movimientoCamaraLibre(int key){   
+  if (key == GLUT_KEY_UP){
+    eye[0]+=0.1f;
+    center[0]+=0.1f;
+  }    
+  else if(key == GLUT_KEY_DOWN){
+    eye[0]-=0.1f;
+    center[0]-=0.1f;
+  }    
+  else if(key == GLUT_KEY_LEFT){
+     eye[2]-=0.1f;
+    center[2]-=0.1f;
+  }   
+  else if(key ==GLUT_KEY_RIGHT){
+     eye[2]+=0.1f;
+    center[2]+=0.1f;
+  }
+   
+  glutPostRedisplay();//  Solicitar actualización de visualización  
+}
+
+
+void paneo(int key){      
+    if (key == GLUT_KEY_UP)
+      //paneoEjeY +=0.1f;
+      center[1] +=0.1f;
+
+    else if (key == GLUT_KEY_DOWN)
+     // paneoEjeY -=0.1f;
+     center[1]-=0.1f;
+
+    else if (key == GLUT_KEY_LEFT)
+     // paneoEjeZ += 0.1f;  
+     center[2]+= 0.1f;  
+
+    else if (key == GLUT_KEY_RIGHT)
+     // paneoEjeZ -= 0.1f;
+     center[2]-= 0.1f;
+
+  glutPostRedisplay();//  Solicitar actualización de visualización  
+}
+
+/*
+Movimiento de la camara en entorno al 
+punto 0,0,0
+*/
+void movimietoEnUnPunto(int key){
+    if (key == GLUT_KEY_UP){
+      eye[1] +=0.1f;
+      }
+
+    else if (key == GLUT_KEY_DOWN){
+      eye[1] -=0.1f;
+      }
+
+    else if (key == GLUT_KEY_LEFT){
+      eye[2] += 0.1f;  
+      }
+
+    else if (key == GLUT_KEY_RIGHT){
+      eye[2] -= 0.1f;
+      }
+  glutPostRedisplay();//  Solicitar actualización de visualización 
 }
 
 // ----------------------------------------------------------
@@ -692,7 +759,8 @@ int main(int argc, char* argv[]){
 
   // Funciones de retrollamada
   glutDisplayFunc(Display);
-  glutSpecialFunc(movimientoLampara);
+  //glutSpecialFunc(movimientoLampara);
+  glutSpecialFunc(movimientoCamaraOLampara);
   glutKeyboardFunc(detectaTecla);
  // glutKeyboardFunc();
   glutReshapeFunc(Reescalar); 

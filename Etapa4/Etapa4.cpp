@@ -29,7 +29,7 @@ float center[3]={2.0f,0.0f,0.0f};
 float eye[3]={0.0f,1.0f,1.0f};
 float vectorUnitario=0;
 
-char tipoVision='l'; //p= paneo + tilt
+char tipoVision='o'; //p= paneo + tilt
                      //t= travelling/Dolly 
                      //l= movimiento libre de camara
 
@@ -70,7 +70,7 @@ void Display (void){
     gluLookAt(eye[0],eye[1],eye[2]  ,center[0],center[1],center[2],  0.0f,1.0f,0.0f);
   }else if(tipoVision=='t'){ //camara gira entorno en un punto
     gluLookAt(eye[0],eye[1],eye[2]  ,center[0],center[1],center[2],  0.0f,1.0f,0.0f);
-  }else if (tipoVision=='l'){//camara libre
+  }else if (tipoVision=='o'){//camara libre
     gluLookAt(eye[0],eye[1],eye[2]  ,center[0],center[1],center[2],  0.0f,1.0f,0.0f); 
   }
   
@@ -238,7 +238,7 @@ void movementCamara(int key, int x, int y){
    movimietoEnUnPunto(key);
     break;
 
-   case 'l':
+   case 'o':
    movimientoCamaraLibre(key);
    break;
 
@@ -322,13 +322,13 @@ void movimientoCamaraLibre(int key){
 }
 
 void detectaTecla(unsigned char caracter, int x, int y){
-
   if(caracter == 'p'){
     tipoVision='p';
   }else if(caracter == 't'){
     tipoVision='t';
-  }else if(caracter=='l'){
-    tipoVision='l';
+  }else if(caracter=='o'){
+    tipoVision='o';
+    printf("hola \n");
   }
   printf("tipoVISION : %c\n",tipoVision);
 }
