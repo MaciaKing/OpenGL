@@ -40,6 +40,10 @@ float center[3]={2.0f,0.0f,0.0f};
 float eye[3]={-1.0f,1.0f,1.0f};
 bool movCamara=true;
 
+float posx = 0.0f, posy=0.0f;
+
+GLfloat angle = 0.0f;
+
 // ----------------------------------------------------------
 // Funciones 
 // ----------------------------------------------------------
@@ -74,13 +78,16 @@ void Display (void){
   //glTranslatef(aux,0.0f,0.0f);
   
   //CAMARA
-  gluPerspective(90.0f,1.0f,0.0f,10.0f);
+ // gluPerspective(90.0f,1.0f,0.0f,10.0f);
   if (tipoVision=='p'){//paneo
     gluLookAt(eye[0],eye[1],eye[2]  ,center[0],center[1],center[2],  0.0f,1.0f,0.0f);
   }else if(tipoVision=='t'){ //camara gira entorno en un punto
     gluLookAt(eye[0],eye[1],eye[2]  ,center[0],center[1],center[2],  0.0f,1.0f,0.0f);
   }else if (tipoVision=='o'){//camara libre
-    gluLookAt(eye[0],eye[1],eye[2]  ,center[0],center[1],center[2],  0.0f,1.0f,0.0f); 
+    //gluLookAt(eye[0],eye[1],eye[2]  ,center[0],center[1],center[2],  0.0f,1.0f,0.0f); 
+    gluLookAt(posx ,eye[1] ,  posy, posx + cos(angle), 0, posy + sin(angle),0,1,0);
+   // gluLookAt(eye[0],eye[1],eye[2], posx + cos(angle), 0, posy + sin(angle),0,1,0);
+
   }
   //FIN CAMARA
 
@@ -103,21 +110,13 @@ void Display (void){
   gluLookAt(0.0f,1.0f,rotarEjeZ,paneoEjeX,paneoEjeY,0.0f,0.0f,1.0f,0.0f);
 */
   
-  //glTranslatef(1.0f,0.0f,0.0f);
   ejesEspaciales();
   plano();
   lampara();
   glFlush();
   glutSwapBuffers();
 }
-/*
-void rotar(){
-  aux+=0.5f;
-  glRotatef(aux,0.0f,1.0f,0.0f);
-  //glRotatef(aux,1.0f,0.0f,0.0f);
-  glutPostRedisplay();//  Solicitar actualización de visualización
 
-}*/
 
 void plano(){
  //  glRectf(-0.2f, 0.0f, 0.2f, 0.5f);
@@ -145,8 +144,8 @@ void plano(){
  glRectf(0.0f, 0.0f, 2.5f, -0.05f);
 
  glColor3f(   1.0,  1.0, 0.0 );
- glRotatef(90.0f,1.0f,0.0f,0.0f);
- glTranslatef(0.0f,0.0f,1.0f);
+ glTranslatef(0.0f,-0.05f,-1.5f);
+ glRotatef(90.0f,1.0f,0.0f,0.0f); 
  glRectf(0.0f, 0.0f, 2.5f, 1.5f);
 
  glPopMatrix();
@@ -569,18 +568,15 @@ void Reescalar(int w, int h) {
     glViewport(0, 0, w, h);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    if (w <= h)
-        glOrtho(-1.0, 1.0, -1.0 * h / w, 1.0 * h / w, -1.0, 1.0);
-    else
-        glOrtho(-1.0 * w / h,
-            1.0 * w / h, -1.0, 1.0, -1.0, 1.0);
+    if (w <= h)gluPerspective(60,h/(float)w,1,100);        
+    else gluPerspective(60,w/(float)h,1,100);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();                             // Activar las modificaciones en el modelo
     glutPostRedisplay();
 }
 
 
-void movimientoLampara(int key/*,int x,int y*/){
+void movimientoLampara(int key){
   //MOVIMIENTOS LAMPARA LUZ
   if(movimiento=='m'){ 
      if (key == GLUT_KEY_RIGHT){
@@ -687,7 +683,7 @@ void movementCamara(int key/*, int x, int y*/){
 }
 
 void movimientoCamaraLibre(int key){   
-  if (key == GLUT_KEY_UP){
+  /*if (key == GLUT_KEY_UP){
     eye[0]+=0.1f;
     center[0]+=0.1f;
   }    
@@ -702,7 +698,26 @@ void movimientoCamaraLibre(int key){
   else if(key ==GLUT_KEY_RIGHT){
      eye[2]+=0.1f;
     center[2]+=0.1f;
-  }
+  }*/
+  	if(key==GLUT_KEY_DOWN){
+		posx=posx - cos (angle);
+		posy=posy - sin(angle);
+	}
+	else{
+		if(key==GLUT_KEY_UP){
+	 		posx=posx + cos (angle);
+		   posy=posy + sin(angle);
+	}
+		else {
+			if(key==GLUT_KEY_RIGHT){
+			angle= angle + 0.1 ;
+			 }
+			else{
+				if(key==GLUT_KEY_LEFT){
+					angle=angle - 0.1;
+					
+				}}
+		}}
    
   glutPostRedisplay();//  Solicitar actualización de visualización  
 }

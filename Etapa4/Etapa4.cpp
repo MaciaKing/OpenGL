@@ -82,14 +82,41 @@ void Display (void){
 
 void plano(){
  //  glRectf(-0.2f, 0.0f, 0.2f, 0.5f);
- glTranslatef(0.0f,0.0f,0.0f);
- glColor3f(   1.0,  0.0, 0.0 );
- glBegin(GL_POLYGON);
+ //glTranslatef(0.0f,0.0f,0.0f);
+ glPushMatrix();
+ glColor3f(   1.0,  1.0, 0.0 );
+ glRotatef(90.0f,1.0f,0.0f,0.0f);
+ glRectf(0.0f, 0.0f, 2.5f, 1.5f);
+
+ glRotatef(90.0f,1.0f,0.0f,0.0f);
+ glColor3f(1.0f,0.0f,1.0f);
+ glRectf(0.0f, 0.0f, 2.5f, -0.05f);
+
+ glRotatef(90.0f,0.0f,1.0f,0.0f);
+ glColor3f(1.0f,0.0f,1.0f);
+ glRectf(0.0f, 0.0f, 1.5f, -0.05f);
+
+ glTranslatef(0.0f,0.0f,2.5f);
+ glColor3f(1.0f,0.0f,1.0f);
+ glRectf(0.0f, 0.0f, 1.5f, -0.05f);
+
+ glTranslatef(1.5f,0.0f,0.0f);
+ glRotatef(90.0f,0.0f,1.0f,0.0f);
+ glColor3f(1.0f,0.0f,1.0f);
+ glRectf(0.0f, 0.0f, 2.5f, -0.05f);
+
+ glColor3f(   1.0,  1.0, 0.0 );
+ glTranslatef(0.0f,-0.05f,-1.5f);
+ glRotatef(90.0f,1.0f,0.0f,0.0f); 
+ glRectf(0.0f, 0.0f, 2.5f, 1.5f);
+
+ glPopMatrix();
+ /*glBegin(GL_POLYGON);
   glVertex3f(  0.0,  0.0, 0.0 );
   glVertex3f(  3.0,  0.0, 0.0 );
   glVertex3f(  3.0,  0.0, 3.0 );
   glVertex3f(  0.0,  0.0, 3.0 );
- glEnd();
+ glEnd();*/
 }
 
 /*
@@ -99,6 +126,8 @@ ejesEspaciales: Dibujamos los ejes espaciales.
  El eje z es de colo azul
 */
 void ejesEspaciales(){   
+  glPushMatrix();
+  glTranslatef(0.0f,1.0f,0.0f);
   /*Eje z*/
   glPushMatrix();
      // NO rotamos porque ya esta en el eje
@@ -139,6 +168,7 @@ glPushMatrix();
       glTranslatef(0.0f,0.0f,0.8f);
       glutSolidCone(0.05f,0.1f,32,20);
    glPopMatrix();
+glPopMatrix();
 glPopMatrix();
 }
 
