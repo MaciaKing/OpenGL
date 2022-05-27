@@ -35,9 +35,9 @@ struct movimientoL{
 struct movimientoL m;
 GLfloat anguloBrazoAereo=0.0f;
 
-char tipoVision='l';
+char tipoVision='p';
 float center[3]={2.0f,0.0f,0.0f};
-float eye[3]={0.0f,1.0f,1.0f};
+float eye[3]={-1.0f,1.0f,1.0f};
 bool movCamara=true;
 
 // ----------------------------------------------------------
@@ -93,6 +93,7 @@ void Display (void){
   gluLookAt(2.5f,0.2f,1.0f, 0.0f,0.0f,0.0f, 0.0f,1.0f,0.0f); //Escena final
   //gluLookAt(2.5f,0.5f,1.0f, 0.0f,0.0f,0.0f, 0.0f,1.0f,0.0f);
   // gluLookAt(0.0f,0.0f,0.5f, 0.0f,0.0f,0.0f, 0.0f,1.0f,0.0f); //mirada desde atras perfecta
+  */
   //gluLookAt(0.01f,-1.5f,0.0f, 0.0f,0.0f,0.0f, 0.0f,1.0f,0.0f); //Vista de arriba perfecta
 
  /* gluPerspective(90.0f,1.0f,0.0f,10.0f);
@@ -101,10 +102,9 @@ void Display (void){
   //gluLookAt(rotateEjeX,rotateEjeY,rotateEjeZ,0.0f,0.0f,0.0f,0.0f,1.0f,0.0f);
   gluLookAt(0.0f,1.0f,rotarEjeZ,paneoEjeX,paneoEjeY,0.0f,0.0f,1.0f,0.0f);
 */
-  glPushMatrix();
+  
   //glTranslatef(1.0f,0.0f,0.0f);
   ejesEspaciales();
-  glPopMatrix();
   plano();
   lampara();
   glFlush();
@@ -122,20 +122,47 @@ void rotar(){
 void plano(){
  //  glRectf(-0.2f, 0.0f, 0.2f, 0.5f);
  //glTranslatef(0.0f,0.0f,0.0f);
+ glPushMatrix();
  glColor3f(   1.0,  1.0, 0.0 );
- glBegin(GL_POLYGON);
+ glRotatef(90.0f,1.0f,0.0f,0.0f);
+ glRectf(0.0f, 0.0f, 2.5f, 1.5f);
+
+ glRotatef(90.0f,1.0f,0.0f,0.0f);
+ glColor3f(1.0f,0.0f,1.0f);
+ glRectf(0.0f, 0.0f, 2.5f, -0.05f);
+
+ glRotatef(90.0f,0.0f,1.0f,0.0f);
+ glColor3f(1.0f,0.0f,1.0f);
+ glRectf(0.0f, 0.0f, 1.5f, -0.05f);
+
+ glTranslatef(0.0f,0.0f,2.5f);
+ glColor3f(1.0f,0.0f,1.0f);
+ glRectf(0.0f, 0.0f, 1.5f, -0.05f);
+
+ glTranslatef(1.5f,0.0f,0.0f);
+ glRotatef(90.0f,0.0f,1.0f,0.0f);
+ glColor3f(1.0f,0.0f,1.0f);
+ glRectf(0.0f, 0.0f, 2.5f, -0.05f);
+
+ glColor3f(   1.0,  1.0, 0.0 );
+ glRotatef(90.0f,1.0f,0.0f,0.0f);
+ glTranslatef(0.0f,0.0f,1.0f);
+ glRectf(0.0f, 0.0f, 2.5f, 1.5f);
+
+ glPopMatrix();
+ /*glBegin(GL_POLYGON);
   glVertex3f(  0.0,  0.0, 0.0 );
   glVertex3f(  3.0,  0.0, 0.0 );
   glVertex3f(  3.0,  0.0, 3.0 );
   glVertex3f(  0.0,  0.0, 3.0 );
- glEnd();
+ glEnd();*/
 }
 
 void lampara(){
+ // glPushMatrix();
   glTranslatef(1.8f,0.05f,1.0f);
   glRotatef(rotarTodo,0.0f,1.0f,0.0f);
   glColor3f(1,1,1);
-
   //Base Lampara
   glPushMatrix();
   glRotatef(-90.0f,1.0f,0.0f,0.0f); 
@@ -340,9 +367,7 @@ glPopMatrix();
 //LAMPARA 
 glPushMatrix(); 
  //glColor3f(1.0f,1.0f,1.0f);
- glTranslatef(0.0f,0.0f,-0.05f);
-
-    
+ glTranslatef(0.0f,0.0f,-0.05f);    
  glutSolidCone(0.1f,0.1f,32,20);
  //Esfera de luz
   glTranslatef(0.0f,0.0f,0.01f);  
@@ -354,18 +379,8 @@ glPopMatrix();
 //FIN LAMPARA
 
 //moverBrazoAereo();
+//glPopMatrix();
 }
-/*
-void moverBrazoAereo(){
-  anguloBrazoAereo-=0.05f;
-  printf("angulo: %f\n",anguloBrazoAereo);
-  glutPostRedisplay(); //  Solicitar actualización de visualización
-
-}*/
-
-/*void moverLampara(){
-
-}*/
 
 void Esfera(){
 	glColor3f(1,0,0);
@@ -381,7 +396,6 @@ ejesEspaciales: Dibujamos los ejes espaciales.
  El eje z es de colo azul
 */
 void ejesEspaciales(){   
-  //glPushMatrix();
   //glTranslatef(0.0f,0.0f,0.0f);
   /*Eje z*/
   glPushMatrix();
@@ -424,8 +438,6 @@ glPushMatrix();
       glutSolidCone(0.05f,0.1f,32,20);
    glPopMatrix();
 glPopMatrix();
-
-//glPopMatrix();
 
 }
 
@@ -567,15 +579,6 @@ void Reescalar(int w, int h) {
     glutPostRedisplay();
 }
 
-void movimientoCamaraOLampara(int key,int x,int y){
-/* if(key== 'p' || key== 'o' || key== 'l') movementCamara(key);
- else movimientoLampara(key);
- */
-  if(movCamara){ // La tecla es para la camara
-    movementCamara(key);
-  }else  movimientoLampara(key);//el movimiento es para lampara
-  
-}
 
 void movimientoLampara(int key/*,int x,int y*/){
   //MOVIMIENTOS LAMPARA LUZ
@@ -606,7 +609,7 @@ void movimientoLampara(int key/*,int x,int y*/){
      // printf("UUUUUP\n");   
     }
     
-   // printf("rotarX = %f, rotarY= %f\n",m.rotarX,m.rotarY);
+    printf("rotarX = %f, rotarY= %f\n",m.rotarX,m.rotarY);
   //MOVIMIENTOS BRAZO   
   }else if(movimiento=='b'){ 
     if(key == GLUT_KEY_UP){
@@ -652,6 +655,14 @@ void detectaTecla(unsigned char caracter, int x, int y){
     movCamara=false;
   }
   printf("caracter= %c\n",caracter);
+}
+
+//MOVIMIENTO CAMARA ----------------------------------------------------------------
+void movimientoCamaraOLampara(int key,int x,int y){
+  if(movCamara){ // La tecla es para la camara
+    movementCamara(key);
+  }else  movimientoLampara(key);//el movimiento es para lampara
+  
 }
 
 //CAMARA
@@ -719,7 +730,7 @@ void paneo(int key){
 
 /*
 Movimiento de la camara en entorno al 
-punto 0,0,0
+punto
 */
 void movimietoEnUnPunto(int key){
     if (key == GLUT_KEY_UP){
@@ -740,6 +751,50 @@ void movimietoEnUnPunto(int key){
   glutPostRedisplay();//  Solicitar actualización de visualización 
 }
 
+//FIN CAMARA
+
+/* Atiende las opciones del menú desplegable -------------------------------*/
+void atiendeMenu (int opcion) {
+
+  switch (opcion) {
+  case  1: 
+           eye[0]=-1.0f; eye[1]=1.0f; eye[2]=1.0f;
+           center[0]=2.0f;center[1]=0.0f; center[2]=0.0f;
+           break;
+           
+  case  2: 
+           eye[0]=3.0f; eye[1]=0.5f; eye[2]=1.0f;
+           center[0]=2.0f;center[1]=0.0f; center[2]=0.0f;
+           break;         
+  }
+  glutPostRedisplay ();
+}
+
+/* Establece las opciones del menú desplegable -----------------------------*/
+void menu (void) {
+
+  int idMenuPrincipal, idMenuParalela, idMenuColor;
+
+  idMenuPrincipal= glutCreateMenu (atiendeMenu);
+  glutAttachMenu (GLUT_RIGHT_BUTTON);
+
+  //glutAddMenuEntry ("Vista", 1);
+
+  idMenuParalela= glutCreateMenu (atiendeMenu);
+  glutAddMenuEntry ("Camara 1", 1);
+  glutAddMenuEntry ("Camara 2", 2);
+  glutAddMenuEntry ("Camara 3", 3);
+  glutSetMenu (idMenuPrincipal);
+  glutAddSubMenu ("Posicion Camara", idMenuParalela);
+
+  idMenuColor= glutCreateMenu (atiendeMenu);
+  glutAddMenuEntry ("Rojo",  5);
+  glutAddMenuEntry ("Verde", 6);
+  glutAddMenuEntry ("Azul",  7);
+  glutSetMenu (idMenuPrincipal);
+  glutAddSubMenu ("Color", idMenuColor);
+}
+
 // ----------------------------------------------------------
 // Función “main()”
 // ----------------------------------------------------------
@@ -752,7 +807,7 @@ int main(int argc, char* argv[]){
   glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
  
   // Crear ventana
-  glutCreateWindow("Movimiento camara");
+  glutCreateWindow("Escena Final");
 
   //  Habilitar la prueba de profundidad de Z-buffer
   glEnable(GL_DEPTH_TEST);
@@ -764,6 +819,8 @@ int main(int argc, char* argv[]){
   glutKeyboardFunc(detectaTecla);
  // glutKeyboardFunc();
   glutReshapeFunc(Reescalar); 
+
+  menu();
 
   //  Pasar el control de eventos a GLUT
   glutMainLoop();
