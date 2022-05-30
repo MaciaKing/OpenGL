@@ -122,23 +122,11 @@ void Display (void){
 
 
 void plano(){
- //  glRectf(-0.2f, 0.0f, 0.2f, 0.5f);
- //glTranslatef(0.0f,0.0f,0.0f);
  for(int i=0; i<4;i++){
  glPushMatrix();
- //if(i==0) //res
- //if(i==1) glRotatef(90.0f,-1.0f,0.0f,0.0f);
- //if(i==2){
-  /*glRotatef(90.0f,-1.0f,0.0f,0.0f);
-  glRotatef(90.0f,0.0f,0.0f,1.0f);
-  glTranslatef(-2.5f,0.0f,0.0f);*/
-  //glScalef(0.0f,0.0f,0.0f);
- // glRotatef(90.0f,0.0f,1.0f,0.0f);
-// }
  if(i==3){
   glRotatef(90.0f,-1.0f,0.0f,0.0f);
   glRotatef(90.0f,0.0f,0.0f,1.0f);
- // glTranslatef(-2.5f,0.0f,0.0f);
  glTranslatef(-1.5f,0.0f,0.0f);
 
  glColor3f(   1.0,  1.0, 0.0 );
@@ -197,9 +185,7 @@ void plano(){
  glRotatef(90.0f,1.0f,0.0f,0.0f); 
  glRectf(0.0f, 0.0f, 2.5f, 1.5f);
  }
-
-glPopMatrix();
- 
+glPopMatrix(); 
  }
 }
 
@@ -441,7 +427,8 @@ ejesEspaciales: Dibujamos los ejes espaciales.
  El eje z es de colo azul
 */
 void ejesEspaciales(){   
-  //glTranslatef(0.0f,0.0f,0.0f);
+  glPushMatrix();
+  glTranslatef(0.0f,1.5f,0.0f);
   /*Eje z*/
   glPushMatrix();
      // NO rotamos porque ya esta en el eje
@@ -484,6 +471,7 @@ glPushMatrix();
    glPopMatrix();
 glPopMatrix();
 
+glPopMatrix();
 }
 
 void Cubo(){
