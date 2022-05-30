@@ -1,59 +1,70 @@
-// Etapa1.cpp
-// Fichero principal 
-//g++ -o Etapa1 Etapa1.cpp -lGLU -lGL -lglut
-
-////////////////////////////////////////////////////
+/*
+Fer pull i me dona igual cambis en local
+git fetch
+git reset
+git merge origin
+*/
 
 #include <GL/glut.h>
 #include <GL/gl.h>
 #include <GL/glu.h>
 #include <stdio.h>
-#include <cmath> 
-
+#include <cmath> //Para calcular valores absolutos de variables
 const int W_WIDTH = 500; // Tama�o incial de la ventana
 const int W_HEIGHT = 500;
 
-/*GLfloat rotarEjeX=1.0f;
+GLfloat rotarEjeX=1.0f;
 GLfloat rotarEjeY=1.0f;
-GLfloat rotarEjeZ=0.0f;*/
+GLfloat rotarEjeZ=-1.0f;
 
-GLfloat travellX=0.0f;
-GLfloat travellY=0.0f;
-GLfloat travellZ=0.0f;
-
-GLfloat anguloRotacion=0.0f;
+GLfloat aux=0.0f;
 
 bool isRotar=false;
-//Vector al que miramos (desde la camara)
-float center[3]={2.0f,0.0f,0.0f};
-float eye[3]={0.0f,1.0f,1.0f};
-float vectorUnitario=0;
+char movimiento='m'; //m= movimiento de la lampara
+bool anguloX=true;
+bool anguloY=false;
+GLfloat rotarTodo=0.0f;
 
-char tipoVision='o'; //p= paneo + tilt
-                     //t= travelling/Dolly 
-                     //l= movimiento libre de camara
+struct movimientoL{
+  bool movAnguloX=true; // si es true mueve eje x, si es false eje y
+  //char signo='+';  // puede ser + o -
+  GLfloat rotarX=0.0f;
+  GLfloat rotarY=0.0f;
+};
+
+struct movimientoL m;
+GLfloat anguloBrazoAereo=0.0f;
+
+char tipoVision='p';
+float center[3]={2.0f,0.0f,0.0f};
+float eye[3]={-1.0f,1.0f,1.0f};
+bool movCamara=true;
+
+float posx = 0.0f, posy=0.0f;
+
+GLfloat angle = 0.0f;
 
 // ----------------------------------------------------------
 // Funciones 
 // ----------------------------------------------------------
 void Display(void);
-void movementCamara(int key, int x, int y);
 void Reescalar(int w, int h);
 void Cubo();
 void ejesEspaciales();
 void Rectangulo();
 void Esfera();
-void cambiarMovimiento(int key);
-void rotarCamara();
-//void detectaTecla(int caracter, int x, int y);
-void detectaTecla(unsigned char caracter, int x, int y);
-void paneo(int key);   
-void movimietoEnUnPunto(int key);
-void movimientoCamaraLibre(int key);
-
 void plano();
-void calculaVectorUnitario();
-
+void cambiarMovimiento(int key);
+void lampara();
+//void rotar();
+void moverBrazoAereo();
+void moverLampara();
+void detectaTecla(unsigned char caracter, int x, int y);
+void movimientoLampara(int key/*,int x,int y*/);
+void movementCamara(int key);
+void paneo(int key);  
+void movimientoCamaraLibre(int key);  
+void movimietoEnUnPunto(int key);
 
 
 // Funci�n que visualiza la escena OpenGL
@@ -64,21 +75,46 @@ void Display (void){
 
   // Resetear transformaciones
   glLoadIdentity();
-
-  gluPerspective(90.0f,1.0f,0.0f,10.0f);
+  //glTranslatef(aux,0.0f,0.0f);
+  
+  //CAMARA
   if (tipoVision=='p'){//paneo
-    gluLookAt(eye[0],eye[1],eye[2]  ,center[0],center[1],center[2],  0.0f,1.0f,0.0f);
+    gluLookAt(posx,eye[1],posy  ,center[0],center[1],center[2],  0.0f,1.0f,0.0f);
   }else if(tipoVision=='t'){ //camara gira entorno en un punto
     gluLookAt(eye[0],eye[1],eye[2]  ,center[0],center[1],center[2],  0.0f,1.0f,0.0f);
   }else if (tipoVision=='o'){//camara libre
-    gluLookAt(eye[0],eye[1],eye[2]  ,center[0],center[1],center[2],  0.0f,1.0f,0.0f); 
+    center[0]=posx+cos(angle);
+    center[2]=posy + sin(angle);
+   // gluLookAt(posx ,eye[1] ,  posy, posx + cos(angle), 0, posy + sin(angle),0,1,0);
+     gluLookAt(posx ,eye[1] ,  posy, center[0], center[1], center[2],0,1,0);
   }
+
+  /*//glRotatef(aux,0.0f,1.0f,0.0f);
+  //rotar();
+  gluPerspective(100.0f,W_WIDTH/W_HEIGHT,0.1f,20.0f);
+  //gluLookAt(0.0f,1.0f,-1.0f, 0.0f,0.0f,0.0f, 0.0f,2.0f,0.0f); //mirada al centro de la lampara
+  //gluLookAt(0.0f,0.0f,-1.0f, 0.0f,0.0f,0.0f, 0.0f,2.0f,0.0f); //mirada al centro de la lampara
+ // gluLookAt(0.6f,0.0f,-0.5f, 0.0f,0.0f,0.0f, 0.0f,1.0f,0.0f); //mirada desde un lado
+  gluLookAt(2.5f,0.2f,1.0f, 0.0f,0.0f,0.0f, 0.0f,1.0f,0.0f); //Escena final
+  //gluLookAt(2.5f,0.5f,1.0f, 0.0f,0.0f,0.0f, 0.0f,1.0f,0.0f);
+  // gluLookAt(0.0f,0.0f,0.5f, 0.0f,0.0f,0.0f, 0.0f,1.0f,0.0f); //mirada desde atras perfecta
+  */
+  //gluLookAt(0.01f,-1.5f,0.0f, 0.0f,0.0f,0.0f, 0.0f,1.0f,0.0f); //Vista de arriba perfecta
+
+ /* gluPerspective(90.0f,1.0f,0.0f,10.0f);
+  //gluLookAt(1.0f,-1.0f,1.0f,0.0f,0.0f,0.0f,1.0f,1.0f,1.0f); //define una transformacion visual
+  //gluLookAt(rotateEjeX,rotateEjeY,rotateEjeZ,0.0f,0.0f,0.0f,1.0f,1.0f,1.0f);
+  //gluLookAt(rotateEjeX,rotateEjeY,rotateEjeZ,0.0f,0.0f,0.0f,0.0f,1.0f,0.0f);
+  gluLookAt(0.0f,1.0f,rotarEjeZ,paneoEjeX,paneoEjeY,0.0f,0.0f,1.0f,0.0f);
+*/
   
   ejesEspaciales();
   plano();
+  lampara();
   glFlush();
   glutSwapBuffers();
 }
+
 
 void plano(){
  //  glRectf(-0.2f, 0.0f, 0.2f, 0.5f);
@@ -119,6 +155,237 @@ void plano(){
  glEnd();*/
 }
 
+void lampara(){
+ // glPushMatrix();
+  glTranslatef(1.8f,0.05f,1.0f);
+  glRotatef(rotarTodo,0.0f,1.0f,0.0f);
+  glColor3f(1,1,1);
+  //Base Lampara
+  glPushMatrix();
+  glRotatef(-90.0f,1.0f,0.0f,0.0f); 
+  //glColor3f(1,0,0);
+  glutSolidCone(0.1f,0.1f,32,20);
+   glPushMatrix();
+    //glColor3f(1.0f,1.0f,1.0f);
+    glTranslatef(0.0f,0.0f,-0.05f);
+    GLUquadric *quad;
+    quad = gluNewQuadric();
+    gluCylinder(quad,0.1,0.1,0.05,25,25);
+   glPopMatrix();
+  glPopMatrix();
+  //Fin Base Lampara
+
+//DOS BRAZOS
+for(int i=0; i<=2;i=i+1){
+  glPushMatrix();
+  if(i==2){ //Movemos la segunda Pierna     
+      glTranslatef(-0.05f,0.0f,0.0f); 
+      //glColor3f(   0.0f,  0.0f, 1.0f );
+  }//selse glColor3f(   0.0f,  1.0f, 0.0f );
+  glBegin(GL_POLYGON);
+    //glColor3f(   0.0,  1.0, 1.0 );
+    //Cara Un costat
+    glVertex3f(  0.0f, 0.0f, 0.0f );
+    glVertex3f(  0.03f, 0.0f, 0.0f );         
+    glVertex3f(  0.03f, 0.3f, 0.0f );     
+    glVertex3f(  0.0f, 0.3f, 0.0f ); 
+
+    //Cara Un costat
+    //glColor3f(1,0,0);
+    glVertex3f(  0.03f, 0.0f, 0.0f );
+    glVertex3f(  0.03f, 0.0f, 0.03f );         
+    glVertex3f(  0.03f, 0.3f, 0.03f );     
+    glVertex3f(  0.03f, 0.3f, 0.0f ); 
+
+    //Cara Un costat
+   //glColor3f(0,1,0);
+    glVertex3f(  0.03f, 0.0f, 0.03f );
+    glVertex3f(  0.03f, 0.3f, 0.03f );         
+    glVertex3f(  0.0f, 0.3f, 0.03f );     
+    glVertex3f(  0.0f, 0.0f, 0.03f ); 
+
+    //Cara Un costat
+    //glColor3f(0,0,1);
+    glVertex3f(  0.0f, 0.3f, 0.03f );
+    glVertex3f(  0.0f, 0.0f, 0.03f );         
+    glVertex3f(  0.0f, 0.0f, 0.0f );     
+    glVertex3f(  0.0f, 0.3f, 0.0f ); 
+  glEnd();
+  glPopMatrix();
+  //FIN DOS BRAZOS
+  }
+ 
+ //BASE AEREA
+ glPushMatrix();
+ glTranslatef(0.0f,0.0f,-0.05f);//Lo movemos en el cetro de las dos columnas
+ glBegin(GL_POLYGON);
+    //glColor3f(   0.0,  0.0, 1.0 );
+    //BASE
+   // glColor3f(0.0f,0.0f,1.0f);
+    glVertex3f(  -0.1f, 0.3f, 0.0f );
+    glVertex3f(  0.1f, 0.3f, 0.0f );         
+    glVertex3f(  0.1f, 0.3f, 0.1f );     
+    glVertex3f(  -0.1f, 0.3f, 0.1f ); 
+glEnd();
+glBegin(GL_POLYGON);
+   // glColor3f(1.0f,0.0f,0.0f);
+    glVertex3f(  -0.1f, 0.3f, 0.1f ); 
+    glVertex3f(  -0.1f, 0.35f, 0.1f );
+    glVertex3f(   0.1f, 0.35f, 0.1f ); 
+    glVertex3f(   0.1f, 0.3f, 0.1f ); 
+glEnd();
+
+glBegin(GL_POLYGON);
+   // glColor3f(0.0f,0.0f,1.0f);
+    glVertex3f(  0.1f, 0.35f, 0.1f ); 
+    glVertex3f(  0.1f, 0.3f, 0.1f );
+    glVertex3f(  0.1f, 0.3f, 0.0f ); 
+    glVertex3f(  0.1f, 0.3f, 0.0f  ); 
+glEnd();
+
+glBegin(GL_POLYGON);
+   // glColor3f(0.0f,0.0f,1.0f);
+    glVertex3f(  0.1f, 0.35f, 0.1f ); 
+    glVertex3f(  0.1f, 0.3f, 0.1f );
+    glVertex3f(  0.1f, 0.3f, 0.0f ); 
+    glVertex3f(  0.1f, 0.35f, 0.0f  ); 
+glEnd();
+
+glBegin(GL_POLYGON);
+   // glColor3f(0.0f,1.0f,0.0f);
+    glVertex3f(  0.1f, 0.3f, 0.0f ); 
+    glVertex3f(  0.1f, 0.35f, 0.0f );
+    glVertex3f(  -0.1f, 0.35f, 0.0f ); 
+    glVertex3f(  -0.1f, 0.3f, 0.0f  ); 
+glEnd();
+
+glBegin(GL_POLYGON);
+    //glColor3f(0.0f,1.0f,0.0f);
+    glVertex3f(  0.1f, 0.3f, 0.0f ); 
+    glVertex3f(  0.1f, 0.35f, 0.0f );
+    glVertex3f(  -0.1f, 0.35f, 0.0f ); 
+    glVertex3f(  -0.1f, 0.3f, 0.0f  ); 
+glEnd();
+
+glBegin(GL_POLYGON);
+    //glColor3f(0.0f,1.0f,1.0f);
+    glVertex3f(  -0.1f, 0.35f, 0.0f ); 
+    glVertex3f(  -0.1f, 0.3f, 0.0f );
+    glVertex3f(  -0.1f, 0.3f, 0.1f ); 
+    glVertex3f(  -0.1f, 0.35f, 0.1f  ); 
+glEnd();
+    
+glBegin(GL_POLYGON);
+    //glColor3f(   1.0,  1.0, 0.0 );
+    //BASE
+    glVertex3f(  -0.1f, 0.35f, 0.0f );
+    glVertex3f(  0.1f, 0.35f, 0.0f );         
+    glVertex3f(  0.1f, 0.35f, 0.1f );     
+    glVertex3f(  -0.1f, 0.35f, 0.1f ); 
+glEnd();
+glPopMatrix();
+ //FIN BASE AEREA
+
+glRotatef (anguloBrazoAereo, 1.0f, 0.0f, 0.0f);	///////////////////
+//BRAZO AEREO
+ glPushMatrix();
+ //glTranslatef(-0.01f,0.45f,0.02f);
+  glTranslatef(-0.01f,0.35f,0.02f);
+
+glBegin(GL_POLYGON);
+   // glColor3f(   0.0,  1.0, 1.0 );
+    //Cara Un costat
+    glVertex3f(  0.0f, 0.0f, 0.0f );
+    glVertex3f(  0.03f, 0.0f, 0.0f );         
+    glVertex3f(  0.03f, 0.3f, 0.0f );     
+    glVertex3f(  0.0f, 0.3f, 0.0f ); 
+glEnd();
+glBegin(GL_POLYGON);
+    //glColor3f(1,0,0);
+    glVertex3f(  0.03f, 0.0f, 0.0f );
+    glVertex3f(  0.03f, 0.0f, 0.03f );         
+    glVertex3f(  0.03f, 0.3f, 0.03f );     
+    glVertex3f(  0.03f, 0.3f, 0.0f ); 
+glEnd();
+glBegin(GL_POLYGON);
+   //glColor3f(0,1,0);
+    glVertex3f(  0.03f, 0.0f, 0.03f );
+    glVertex3f(  0.03f, 0.3f, 0.03f );         
+    glVertex3f(  0.0f, 0.3f, 0.03f );     
+    glVertex3f(  0.0f, 0.0f, 0.03f ); 
+glEnd();    
+glBegin(GL_POLYGON);
+    glVertex3f(  0.0f, 0.3f, 0.03f );
+    glVertex3f(  0.0f, 0.0f, 0.03f );         
+    glVertex3f(  0.0f, 0.0f, 0.0f );     
+    glVertex3f(  0.0f, 0.3f, 0.0f ); 
+glEnd();
+glBegin(GL_POLYGON);
+    glVertex3f(  0.0f, 0.3f, 0.0f );
+    glVertex3f(  0.03f, 0.3f, 0.0f );         
+    glVertex3f(  0.03f, 0.3f, 0.03f );     
+    glVertex3f(  0.0f, 0.3f, 0.03f ); 
+glEnd();
+glPopMatrix();
+//FIN BRAZO AEREO
+
+
+
+//MINI BRAZO AEREO
+glPushMatrix();
+ //glColor3f(0.0f,1.0f,0.0f);
+ glRotatef(90,1.0f,0.0f,0.0f);     // ROTACION LAMPARA
+ glTranslatef(0.0f,0.040f,-0.74f);
+
+ GLUquadric *quad1;
+ quad1 = gluNewQuadric();
+ gluCylinder(quad1,0.005,0.005,0.1,25,25);
+glPopMatrix();
+
+//Posible movimiento del objeto
+ if(m.movAnguloX){
+   glRotatef(m.rotarX,0.0f,0.0f,1.0f);
+   //printf("FALSE\n");
+ }else{
+   glRotatef(m.rotarY,0.0f,1.0f,0.0f);  
+   //printf("TRUEEEE\n");
+ }
+
+glTranslatef(0.0f,0.74f,-0.03f);
+glPushMatrix();
+ //glColor3f(0.0f,1.0f,1.0f);
+ GLUquadric *quad2;
+ quad2 = gluNewQuadric();
+ gluCylinder(quad2,0.005,0.005,0.1,25,25);
+glPopMatrix();
+//FIN MINI BRAZO AEREO
+
+
+//LAMPARA 
+glPushMatrix(); 
+ //glColor3f(1.0f,1.0f,1.0f);
+ glTranslatef(0.0f,0.0f,-0.05f);    
+ glutSolidCone(0.1f,0.1f,32,20);
+ //Esfera de luz
+  glTranslatef(0.0f,0.0f,0.01f);  
+ 	//glColor3f(1,0,0);
+	GLUquadric *quad3;
+	quad3 = gluNewQuadric();
+	gluSphere(quad3,0.05f,100,20);
+glPopMatrix();
+//FIN LAMPARA
+
+//moverBrazoAereo();
+//glPopMatrix();
+}
+
+void Esfera(){
+	glColor3f(1,0,0);
+	GLUquadric *quad;
+	quad = gluNewQuadric();
+	gluSphere(quad,0.1f,100,20);
+}
+
 /*
 ejesEspaciales: Dibujamos los ejes espaciales.
  El eje y es de color verde
@@ -126,8 +393,7 @@ ejesEspaciales: Dibujamos los ejes espaciales.
  El eje z es de colo azul
 */
 void ejesEspaciales(){   
-  glPushMatrix();
-  glTranslatef(0.0f,1.0f,0.0f);
+  //glTranslatef(0.0f,0.0f,0.0f);
   /*Eje z*/
   glPushMatrix();
      // NO rotamos porque ya esta en el eje
@@ -169,7 +435,7 @@ glPushMatrix();
       glutSolidCone(0.05f,0.1f,32,20);
    glPopMatrix();
 glPopMatrix();
-glPopMatrix();
+
 }
 
 void Cubo(){
@@ -230,6 +496,61 @@ void Cubo(){
 }
 
 
+void Rectangulo(){
+//LADO FRONTAL: lado multicolor
+  glBegin(GL_POLYGON);
+  glColor3f(   1.0,  1.0, 1.0 );
+  glVertex3f(  0.5, -0.5, 0.7 );
+  glVertex3f(  0.5,  0.5, 0.7 );
+  glVertex3f( -0.5,  0.5, 0.7 );
+  glVertex3f( -0.5, -0.5, 0.7 );
+  glEnd();
+
+  // LADO TRASERO: lado blanco
+  glBegin(GL_POLYGON);
+  glColor3f(   1.0,  1.0, 1.0 );
+  glVertex3f(  0.5, -0.5, 0.7 );
+  glVertex3f(  0.5,  0.5, 0.7 );
+  glVertex3f( -0.5,  0.5, 0.7 );
+  glVertex3f( -0.5, -0.5, 0.7 );
+  glEnd();
+ 
+  // LADO DERECHO: lado morado
+  glBegin(GL_POLYGON);
+  glColor3f(  1.0,  0.0,  1.0 );
+  glVertex3f( 0.5, -0.5, -0.7 );
+  glVertex3f( 0.5,  0.5, -0.7 );
+  glVertex3f( 0.5,  0.5,  0.7 );
+  glVertex3f( 0.5, -0.5,  0.7 );
+  glEnd();
+ 
+  // LADO IZQUIERDO: lado verde
+  glBegin(GL_POLYGON);
+  glColor3f(   0.0,  1.0,  0.0 );
+  glVertex3f( -0.5, -0.5,  0.7 );
+  glVertex3f( -0.5,  0.5,  0.7 );
+  glVertex3f( -0.5,  0.5, -0.7 );
+  glVertex3f( -0.5, -0.5, -0.7 );
+  glEnd();
+ 
+  // LADO SUPERIOR: lado azul
+  glBegin(GL_POLYGON);
+  glColor3f(   0.0,  0.0,  1.0 );
+  glVertex3f(  0.5,  0.5,  0.7 );
+  glVertex3f(  0.5,  0.5, -0.7 );
+  glVertex3f( -0.5,  0.5, -0.7 );
+  glVertex3f( -0.5,  0.5,  0.7 );
+  glEnd();
+ 
+  // LADO INFERIOR: lado rojo
+  glBegin(GL_POLYGON);
+  glColor3f(   1.0,  0.0,  0.0 );
+  glVertex3f(  0.5, -0.5, -0.7 );
+  glVertex3f(  0.5, -0.5,  0.7 );
+  glVertex3f( -0.5, -0.5,  0.7 );
+  glVertex3f( -0.5, -0.5, -0.7 );
+  glEnd();
+}
 
 // Funci�n que se ejecuta cuando el sistema no esta ocupado
 void Idle (void){
@@ -245,20 +566,101 @@ void Reescalar(int w, int h) {
     glViewport(0, 0, w, h);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    if (w <= h)
-        glOrtho(-1.0, 1.0, -1.0 * h / w, 1.0 * h / w, -1.0, 1.0);
-    else
-        glOrtho(-1.0 * w / h,
-            1.0 * w / h, -1.0, 1.0, -1.0, 1.0);
+    if (w <= h)gluPerspective(60,h/(float)w,1,100);        
+    else gluPerspective(60,w/(float)h,1,100);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();                             // Activar las modificaciones en el modelo
     glutPostRedisplay();
 }
 
-/*
-movementCamara -> 
-*/
-void movementCamara(int key, int x, int y){
+
+void movimientoLampara(int key){
+  //MOVIMIENTOS LAMPARA LUZ
+  if(movimiento=='m'){ 
+     if (key == GLUT_KEY_RIGHT){
+      if(abs(m.rotarY)<6.5 || m.rotarY==6.5){
+       m.movAnguloX=false;//movimiento en y
+       m.rotarY-=0.5f;
+      }
+     }
+   
+    else if (key == GLUT_KEY_LEFT){
+      if((abs(m.rotarY)<6.5) || m.rotarY==-6.5){
+       m.movAnguloX=false; //movimiento en y
+       m.rotarY+=0.5f;
+    }
+    }
+
+    else if (key == GLUT_KEY_DOWN){
+      m.movAnguloX=true;
+      m.rotarX+=0.5f;
+      //printf("DOOOOWN\n");
+    }
+    
+    else if (key == GLUT_KEY_UP){
+      m.movAnguloX=true;
+      m.rotarX-=0.5f;   
+     // printf("UUUUUP\n");   
+    }
+    
+    printf("rotarX = %f, rotarY= %f\n",m.rotarX,m.rotarY);
+  //MOVIMIENTOS BRAZO   
+  }else if(movimiento=='b'){ 
+    if(key == GLUT_KEY_UP){
+      if(anguloBrazoAereo<0.5){
+        anguloBrazoAereo+=0.5f;
+      }
+     // printf("anguloBrazoAereo --> %f\n",anguloBrazoAereo);
+    }else if(key == GLUT_KEY_DOWN){
+      if(anguloBrazoAereo>-11.5){
+        anguloBrazoAereo-=0.5f;
+      }      
+      //printf("anguloBrazoAereo --> %f\n",anguloBrazoAereo);
+    }
+  //MOVIMIENTO TOTAL DEL OBJETO
+  }else if(movimiento=='t'){
+    if (key == GLUT_KEY_LEFT){
+          rotarTodo+=1.0f;      
+    }else if(key == GLUT_KEY_RIGHT){
+          rotarTodo-=1.0f;
+    }
+  }
+  glutPostRedisplay();//  Solicitar actualización de visualización  
+}
+
+void detectaTecla(unsigned char caracter, int x, int y){
+  if(caracter == 'p'){
+   tipoVision='p';
+   movCamara=true;
+  }else if(caracter=='l'){
+    tipoVision='l';
+    movCamara=true;
+  }else if(caracter=='o'){
+    tipoVision='o';
+    movCamara=true;
+  }else if(caracter=='m'){ //Movimiento luz 
+    movimiento='m';
+    movCamara=false;
+  }else if(caracter=='b'){ //Movimiento brazo
+    movimiento='b';
+    movCamara=false;
+  }else if(caracter=='t'){
+    movimiento='t';
+    movCamara=false;
+  }
+  printf("caracter= %c\n",caracter);
+}
+
+//MOVIMIENTO CAMARA ----------------------------------------------------------------
+void movimientoCamaraOLampara(int key,int x,int y){
+  if(movCamara){ // La tecla es para la camara
+    movementCamara(key);
+  }else  movimientoLampara(key);//el movimiento es para lampara
+  
+}
+
+//CAMARA
+void movementCamara(int key){
   switch (tipoVision){
   case 'p':
     paneo(key);
@@ -275,17 +677,53 @@ void movementCamara(int key, int x, int y){
   default:
     //no hagas nada
     break;
-  }
- 
+  } 
 }
 
-void calculaVectorUnitario(){
-  vectorUnitario=sqrt(center[0]+center[1]+center[2]);;
+void movimientoCamaraLibre(int key){   
+  	if(key==GLUT_KEY_DOWN){
+		posx=posx - cos (angle);
+		posy=posy - sin(angle);
+	}
+	else{
+		if(key==GLUT_KEY_UP){
+	 		posx=posx + cos (angle);
+		   posy=posy + sin(angle);
+	}
+		else {
+			if(key==GLUT_KEY_RIGHT){
+			angle= angle + 0.1 ;
+			 }
+			else{
+				if(key==GLUT_KEY_LEFT){
+					angle=angle - 0.1;
+					
+				}}
+		}}
+   
+  glutPostRedisplay();//  Solicitar actualización de visualización  
+}
+
+
+void paneo(int key){      
+    if (key == GLUT_KEY_UP)
+      center[1] +=0.1f;
+
+    else if (key == GLUT_KEY_DOWN)
+     center[1]-=0.1f;
+
+    else if (key == GLUT_KEY_LEFT)
+     center[2]+= 0.1f;  
+
+    else if (key == GLUT_KEY_RIGHT)
+     center[2]-= 0.1f;
+
+  glutPostRedisplay();//  Solicitar actualización de visualización  
 }
 
 /*
 Movimiento de la camara en entorno al 
-punto 0,0,0
+punto
 */
 void movimietoEnUnPunto(int key){
     if (key == GLUT_KEY_UP){
@@ -306,61 +744,45 @@ void movimietoEnUnPunto(int key){
   glutPostRedisplay();//  Solicitar actualización de visualización 
 }
 
-/*
-paneo + tilt --> movimiento del ojo
-  gluLookAt(vector[0],vector[1],vector[2]  ,paneoEjeX,paneoEjeY,paneoEjeZ,  0.0f,1.0f,0.0f);
-*/
-void paneo(int key){      
-    if (key == GLUT_KEY_UP)
-      //paneoEjeY +=0.1f;
-      center[1] +=0.1f;
-
-    else if (key == GLUT_KEY_DOWN)
-     // paneoEjeY -=0.1f;
-     center[1]-=0.1f;
-
-    else if (key == GLUT_KEY_LEFT)
-     // paneoEjeZ += 0.1f;  
-     center[2]+= 0.1f;  
-
-    else if (key == GLUT_KEY_RIGHT)
-     // paneoEjeZ -= 0.1f;
-     center[2]-= 0.1f;
-
-  glutPostRedisplay();//  Solicitar actualización de visualización  
+/* Atiende las opciones del menú desplegable -------------------------------*/
+void atiendeMenu (int opcion) {
+  switch (opcion) {
+  case  1: 
+           eye[0]=-1.0f; eye[1]=1.0f; eye[2]=1.0f;
+           center[0]=2.0f;center[1]=0.0f; center[2]=0.0f;
+           break;
+           
+  case  2: 
+           eye[0]=3.0f; eye[1]=0.5f; eye[2]=1.0f;
+           center[0]=2.0f;center[1]=0.0f; center[2]=0.0f;
+           break;         
+  }
+  glutPostRedisplay ();
 }
 
-void movimientoCamaraLibre(int key){   
-  if (key == GLUT_KEY_UP){
-    eye[0]+=0.1f;
-    center[0]+=0.1f;
-  }    
-  else if(key == GLUT_KEY_DOWN){
-    eye[0]-=0.1f;
-    center[0]-=0.1f;
-  }    
-  else if(key == GLUT_KEY_LEFT){
-     eye[2]-=0.1f;
-    center[2]-=0.1f;
-  }   
-  else if(key ==GLUT_KEY_RIGHT){
-     eye[2]+=0.1f;
-    center[2]+=0.1f;
-  }
-   
-  glutPostRedisplay();//  Solicitar actualización de visualización  
-}
+/* Establece las opciones del menú desplegable -----------------------------*/
+void menu (void) {
 
-void detectaTecla(unsigned char caracter, int x, int y){
-  if(caracter == 'p'){
-    tipoVision='p';
-  }else if(caracter == 't'){
-    tipoVision='t';
-  }else if(caracter=='o'){
-    tipoVision='o';
-    printf("hola \n");
-  }
-  printf("tipoVISION : %c\n",tipoVision);
+  int idMenuPrincipal, idMenuParalela, idMenuColor;
+
+  idMenuPrincipal= glutCreateMenu (atiendeMenu);
+  glutAttachMenu (GLUT_RIGHT_BUTTON);
+
+  //glutAddMenuEntry ("Vista", 1);
+
+  idMenuParalela= glutCreateMenu (atiendeMenu);
+  glutAddMenuEntry ("Camara 1", 1);
+  glutAddMenuEntry ("Camara 2", 2);
+  glutAddMenuEntry ("Camara 3", 3);
+  glutSetMenu (idMenuPrincipal);
+  glutAddSubMenu ("Posicion Camara", idMenuParalela);
+
+  idMenuColor= glutCreateMenu (atiendeMenu);
+  glutAddMenuEntry ("Rojo",  5);
+  glutAddMenuEntry ("Verde", 6);
+  glutAddMenuEntry ("Azul",  7);
+  glutSetMenu (idMenuPrincipal);
+  glutAddSubMenu ("Color", idMenuColor);
 }
 
 // ----------------------------------------------------------
@@ -375,17 +797,20 @@ int main(int argc, char* argv[]){
   glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
  
   // Crear ventana
-  glutCreateWindow("Movimiento camara");
+  glutCreateWindow("Escena Final");
 
   //  Habilitar la prueba de profundidad de Z-buffer
   glEnable(GL_DEPTH_TEST);
 
   // Funciones de retrollamada
   glutDisplayFunc(Display);
-  //glutSpecialFunc(specialKeys);
+  //glutSpecialFunc(movimientoLampara);
+  glutSpecialFunc(movimientoCamaraOLampara);
   glutKeyboardFunc(detectaTecla);
-  glutSpecialFunc(movementCamara);  
+ // glutKeyboardFunc();
   glutReshapeFunc(Reescalar); 
+
+  menu();
 
   //  Pasar el control de eventos a GLUT
   glutMainLoop();
@@ -394,3 +819,4 @@ int main(int argc, char* argv[]){
   return 0;
  
 }
+

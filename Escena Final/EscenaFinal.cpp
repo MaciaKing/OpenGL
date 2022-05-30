@@ -78,18 +78,16 @@ void Display (void){
   //glTranslatef(aux,0.0f,0.0f);
   
   //CAMARA
- // gluPerspective(90.0f,1.0f,0.0f,10.0f);
   if (tipoVision=='p'){//paneo
-    gluLookAt(eye[0],eye[1],eye[2]  ,center[0],center[1],center[2],  0.0f,1.0f,0.0f);
+    gluLookAt(posx,eye[1],posy  ,center[0],center[1],center[2],  0.0f,1.0f,0.0f);
   }else if(tipoVision=='t'){ //camara gira entorno en un punto
     gluLookAt(eye[0],eye[1],eye[2]  ,center[0],center[1],center[2],  0.0f,1.0f,0.0f);
   }else if (tipoVision=='o'){//camara libre
-    //gluLookAt(eye[0],eye[1],eye[2]  ,center[0],center[1],center[2],  0.0f,1.0f,0.0f); 
-    gluLookAt(posx ,eye[1] ,  posy, posx + cos(angle), 0, posy + sin(angle),0,1,0);
-   // gluLookAt(eye[0],eye[1],eye[2], posx + cos(angle), 0, posy + sin(angle),0,1,0);
-
+    center[0]=posx+cos(angle);
+    center[2]=posy + sin(angle);
+   // gluLookAt(posx ,eye[1] ,  posy, posx + cos(angle), 0, posy + sin(angle),0,1,0);
+     gluLookAt(posx ,eye[1] ,  posy, center[0], center[1], center[2],0,1,0);
   }
-  //FIN CAMARA
 
   /*//glRotatef(aux,0.0f,1.0f,0.0f);
   //rotar();
@@ -662,7 +660,7 @@ void movimientoCamaraOLampara(int key,int x,int y){
 }
 
 //CAMARA
-void movementCamara(int key/*, int x, int y*/){
+void movementCamara(int key){
   switch (tipoVision){
   case 'p':
     paneo(key);
@@ -683,22 +681,6 @@ void movementCamara(int key/*, int x, int y*/){
 }
 
 void movimientoCamaraLibre(int key){   
-  /*if (key == GLUT_KEY_UP){
-    eye[0]+=0.1f;
-    center[0]+=0.1f;
-  }    
-  else if(key == GLUT_KEY_DOWN){
-    eye[0]-=0.1f;
-    center[0]-=0.1f;
-  }    
-  else if(key == GLUT_KEY_LEFT){
-     eye[2]-=0.1f;
-    center[2]-=0.1f;
-  }   
-  else if(key ==GLUT_KEY_RIGHT){
-     eye[2]+=0.1f;
-    center[2]+=0.1f;
-  }*/
   	if(key==GLUT_KEY_DOWN){
 		posx=posx - cos (angle);
 		posy=posy - sin(angle);
@@ -725,19 +707,15 @@ void movimientoCamaraLibre(int key){
 
 void paneo(int key){      
     if (key == GLUT_KEY_UP)
-      //paneoEjeY +=0.1f;
       center[1] +=0.1f;
 
     else if (key == GLUT_KEY_DOWN)
-     // paneoEjeY -=0.1f;
      center[1]-=0.1f;
 
     else if (key == GLUT_KEY_LEFT)
-     // paneoEjeZ += 0.1f;  
      center[2]+= 0.1f;  
 
     else if (key == GLUT_KEY_RIGHT)
-     // paneoEjeZ -= 0.1f;
      center[2]-= 0.1f;
 
   glutPostRedisplay();//  Solicitar actualización de visualización  
@@ -766,11 +744,8 @@ void movimietoEnUnPunto(int key){
   glutPostRedisplay();//  Solicitar actualización de visualización 
 }
 
-//FIN CAMARA
-
 /* Atiende las opciones del menú desplegable -------------------------------*/
 void atiendeMenu (int opcion) {
-
   switch (opcion) {
   case  1: 
            eye[0]=-1.0f; eye[1]=1.0f; eye[2]=1.0f;
