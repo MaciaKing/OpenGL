@@ -73,6 +73,11 @@ void Display (void){
   glEnable(GL_DEPTH_TEST);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+  //Render de la luz
+  /*glEnable (GL_LIGHTING);
+  glEnable (GL_COLOR_MATERIAL);
+  glColorMaterial (GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
+*/
   // Resetear transformaciones
   glLoadIdentity();
   //glTranslatef(aux,0.0f,0.0f);
@@ -109,7 +114,7 @@ void Display (void){
 */
   
   ejesEspaciales();
-  plano();
+  plano(); //Suelo y paredes.
   lampara();
   glFlush();
   glutSwapBuffers();
@@ -119,7 +124,53 @@ void Display (void){
 void plano(){
  //  glRectf(-0.2f, 0.0f, 0.2f, 0.5f);
  //glTranslatef(0.0f,0.0f,0.0f);
+ for(int i=0; i<4;i++){
  glPushMatrix();
+ //if(i==0) //res
+ //if(i==1) glRotatef(90.0f,-1.0f,0.0f,0.0f);
+ //if(i==2){
+  /*glRotatef(90.0f,-1.0f,0.0f,0.0f);
+  glRotatef(90.0f,0.0f,0.0f,1.0f);
+  glTranslatef(-2.5f,0.0f,0.0f);*/
+  //glScalef(0.0f,0.0f,0.0f);
+ // glRotatef(90.0f,0.0f,1.0f,0.0f);
+// }
+ if(i==3){
+  glRotatef(90.0f,-1.0f,0.0f,0.0f);
+  glRotatef(90.0f,0.0f,0.0f,1.0f);
+ // glTranslatef(-2.5f,0.0f,0.0f);
+ glTranslatef(-1.5f,0.0f,0.0f);
+
+ glColor3f(   1.0,  1.0, 0.0 );
+ glRotatef(90.0f,1.0f,0.0f,0.0f);
+ glRectf(0.0f, 0.0f, 1.5f, 1.5f);
+
+ glRotatef(90.0f,1.0f,0.0f,0.0f);
+ glColor3f(1.0f,0.0f,1.0f);
+ glRectf(0.0f, 0.0f, 1.5f, -0.05f);
+
+ glRotatef(90.0f,0.0f,1.0f,0.0f);
+ glColor3f(1.0f,0.0f,1.0f);
+ glRectf(0.0f, 0.0f, 1.5f, -0.05f);
+
+ glTranslatef(0.0f,0.0f,2.5f);
+ glColor3f(1.0f,0.0f,1.0f);
+ glRectf(0.0f, 0.0f, 0.0f, -0.05f);
+
+
+ glTranslatef(1.5f,0.0f,0.0f);
+ glRotatef(90.0f,0.0f,1.0f,0.0f);
+ glColor3f(1.0f,0.0f,1.0f);
+ glRectf(1.0f, 0.0f, 2.5f, -0.05f);
+
+ glColor3f(   1.0,  1.0, 0.0 );
+ glTranslatef(0.0f,-0.05f,-1.5f);
+ glRotatef(90.0f,1.0f,0.0f,0.0f); 
+ glRectf(1.0f, 0.0f, 2.5f, 1.5f);
+  
+ }else{
+  //if(i==0) //res
+ if(i==1) glRotatef(90.0f,-1.0f,0.0f,0.0f);
  glColor3f(   1.0,  1.0, 0.0 );
  glRotatef(90.0f,1.0f,0.0f,0.0f);
  glRectf(0.0f, 0.0f, 2.5f, 1.5f);
@@ -145,14 +196,11 @@ void plano(){
  glTranslatef(0.0f,-0.05f,-1.5f);
  glRotatef(90.0f,1.0f,0.0f,0.0f); 
  glRectf(0.0f, 0.0f, 2.5f, 1.5f);
+ }
 
- glPopMatrix();
- /*glBegin(GL_POLYGON);
-  glVertex3f(  0.0,  0.0, 0.0 );
-  glVertex3f(  3.0,  0.0, 0.0 );
-  glVertex3f(  3.0,  0.0, 3.0 );
-  glVertex3f(  0.0,  0.0, 3.0 );
- glEnd();*/
+glPopMatrix();
+ 
+ }
 }
 
 void lampara(){
