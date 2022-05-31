@@ -35,14 +35,20 @@ struct movimientoL{
 struct movimientoL m;
 GLfloat anguloBrazoAereo=0.0f;
 
-char tipoVision='p';
-float center[3]={2.0f,0.0f,0.0f};
-float eye[3]={-1.0f,1.0f,1.0f};
 bool movCamara=true;
 
-float posx = 0.0f, posy=0.0f;
-
+float posx = 4.6f, posy=0.53f;
+char tipoVision='o';
 GLfloat angle = 0.0f;
+
+float center[3]={0.0f,0.0f,0.0f};
+float eye[3]={(float)(posx+cos(angle)),1.0f,(float)(posy + sin(angle))};
+
+/*
+center[0]=posx+cos(angle);
+    center[2]=posy + sin(angle);
+*/
+
 
 GLfloat light[] = {1.0f, 0.0f, 0.0f};
 GLfloat posicionLuzLampara[] = {0.0f, 0.0f, 0.0f};
@@ -74,15 +80,17 @@ void movimietoEnUnPunto(int key);
 
 // Funci�n que visualiza la escena OpenGL
 void Display (void){
+  printf("posx= %f,eye[1]= %f,posy= %f\n",(float)(posx+cos(angle)) ,eye[1] , (float)(posy + sin(angle)));
+
   //  Borrar pantalla y Z-buffer
   glEnable(GL_DEPTH_TEST);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
   //Render de la luz
-  /*glEnable (GL_LIGHTING);
+  glEnable (GL_LIGHTING);
   glEnable (GL_COLOR_MATERIAL);
   glColorMaterial (GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
-  glEnable (GL_LIGHT0);*/
+  glEnable (GL_LIGHT0);
 
 
   //boira
@@ -90,13 +98,14 @@ void Display (void){
    printf("BOIRAAAA\n");
    glEnable (GL_FOG);
 
-   float color[]={0.5,0.5,0.5,1.0};
+   float color[]={1.0,0.0,0.0,0.5};
    glFogfv(GL_FOG_COLOR,color);  
 
    glFogi(GL_FOG_MODE, GL_LINEAR);
 
-   glFogf(GL_FOG_START,4.80);
-   glFogf(GL_FOG_END,10.0);
+  /* glFogf(GL_FOG_START,4.80);
+   glFogf(GL_FOG_END,10.0);*/
+   glFogf(GL_FOG_DENSITY,0.5f);
   }
 
 
@@ -107,16 +116,21 @@ void Display (void){
   
   //CAMARA
   if (tipoVision=='p'){//paneo
+
     gluLookAt(posx,eye[1],posy  ,center[0],center[1],center[2],  0.0f,1.0f,0.0f);
+   // gluLookAt(eye[0],eye[1],eye[2]  ,center[0],center[1],center[2],  0.0f,1.0f,0.0f);
   }else if(tipoVision=='t'){ //camara gira entorno en un punto
     gluLookAt(eye[0],eye[1],eye[2]  ,center[0],center[1],center[2],  0.0f,1.0f,0.0f);
   }else if (tipoVision=='o'){//camara libre
     center[0]=posx+cos(angle);
     center[2]=posy + sin(angle);
-   // gluLookAt(posx ,eye[1] ,  posy, posx + cos(angle), 0, posy + sin(angle),0,1,0);
-     gluLookAt(posx ,eye[1] ,  posy, center[0], center[1], center[2],0,1,0);
+    eye[0]=posx; eye[2]=posy;
+    gluLookAt(eye[0] ,eye[1] ,  eye[2], center[0], center[1], center[2],0,1,0);   
+    printf("posx= %f,eye[1]= %f,posy= %f  || center[0]= %f,center[1]= %f,center[2]= %f\n",posx ,eye[1] ,  posy, center[0], center[1], center[2]);
+
   }
 
+//printf("eye[0]= %f,eye[1]= %f,eye[2]= %f  || center[0]= %f,center[1]= %f,center[2]= %f\n",eye[0],eye[1],eye[2],center[0],center[1],center[2]);
   /*//glRotatef(aux,0.0f,1.0f,0.0f);
   //rotar();
   gluPerspective(100.0f,W_WIDTH/W_HEIGHT,0.1f,20.0f);
@@ -819,11 +833,15 @@ void movimietoEnUnPunto(int key){
 void atiendeMenu (int opcion) {
   switch (opcion) {
   case  1: 
-           eye[0]=-1.0f; eye[1]=1.0f; eye[2]=1.0f;
-           center[0]=2.0f;center[1]=0.0f; center[2]=0.0f;
+           eye[0]= 9.74f;eye[1]= 1.0f;eye[2]= 1.6f;
+           center[0]= 2.77f;center[1]= 0.80f;center[2]= 1.644642f;
            break;
+/*
+eye[0]= 4.602194,eye[1]= 1.000000,eye[2]= 1.498946 
+center[0]= 3.614714,center[1]= 0.800000,center[2]= 1.341201
+*/           
            
-  case  2: 
+  case  2:  
            eye[0]=3.0f; eye[1]=0.5f; eye[2]=1.0f;
            center[0]=2.0f;center[1]=0.0f; center[2]=0.0f;
            break;    
@@ -831,10 +849,11 @@ void atiendeMenu (int opcion) {
   case  4: 
            
            boira=true;
-           printf("Activada boira\n");
+           //printf("Activada boira\n");
            break;     
   case  5: 
            boira=false;
+           printf("Desactiva boira\n");
            break;      
    
   }
