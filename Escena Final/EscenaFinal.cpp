@@ -44,6 +44,12 @@ float posx = 0.0f, posy=0.0f;
 
 GLfloat angle = 0.0f;
 
+GLfloat light[] = {1.0f, 0.0f, 0.0f};
+GLfloat posicionLuzLampara[] = {0.0f, 0.0f, 0.0f};
+GLfloat luz[] = {1.0f, 0.0f, 0.0f, 1.0f};
+
+bool boira=false;
+
 // ----------------------------------------------------------
 // Funciones 
 // ----------------------------------------------------------
@@ -56,11 +62,10 @@ void Esfera();
 void plano();
 void cambiarMovimiento(int key);
 void lampara();
-//void rotar();
 void moverBrazoAereo();
 void moverLampara();
 void detectaTecla(unsigned char caracter, int x, int y);
-void movimientoLampara(int key/*,int x,int y*/);
+void movimientoLampara(int key);
 void movementCamara(int key);
 void paneo(int key);  
 void movimientoCamaraLibre(int key);  
@@ -77,7 +82,25 @@ void Display (void){
   /*glEnable (GL_LIGHTING);
   glEnable (GL_COLOR_MATERIAL);
   glColorMaterial (GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
-*/
+  glEnable (GL_LIGHT0);*/
+
+
+  //boira
+  if(boira){
+   printf("BOIRAAAA\n");
+   glEnable (GL_FOG);
+
+   float color[]={0.5,0.5,0.5,1.0};
+   glFogfv(GL_FOG_COLOR,color);  
+
+   glFogi(GL_FOG_MODE, GL_LINEAR);
+
+   glFogf(GL_FOG_START,4.80);
+   glFogf(GL_FOG_END,10.0);
+  }
+
+
+ // glLightfv(GL_LIGHT0,GL_AMBIENT,new GLfloat[4]{0.5f,0.5f,0.5f,1});
   // Resetear transformaciones
   glLoadIdentity();
   //glTranslatef(aux,0.0f,0.0f);
@@ -127,11 +150,13 @@ void plano(){
  if(i==3){
   glRotatef(90.0f,-1.0f,0.0f,0.0f);
   glRotatef(90.0f,0.0f,0.0f,1.0f);
- glTranslatef(-1.5f,0.0f,0.0f);
+  glTranslatef(-1.5f,0.0f,0.0f);
 
  glColor3f(   1.0,  1.0, 0.0 );
  glRotatef(90.0f,1.0f,0.0f,0.0f);
+ glNormal3f(0.0f,1.0f,0.0f);
  glRectf(0.0f, 0.0f, 1.5f, 1.5f);
+
 
  glRotatef(90.0f,1.0f,0.0f,0.0f);
  glColor3f(1.0f,0.0f,1.0f);
@@ -405,7 +430,17 @@ glPushMatrix();
  	//glColor3f(1,0,0);
 	GLUquadric *quad3;
 	quad3 = gluNewQuadric();
+/*
+ glEnable(GL_LIGHT1); 
+ glLighti(GL_LIGHT1, GL_SPOT_CUTOFF,45);
+ glLightf(GL_LIGHT1, GL_SPOT_EXPONENT, 10);
+ glLightfv(GL_LIGHT1, GL_DIFFUSE, luz);
+ glLightfv(GL_LIGHT1,GL_POSITION,posicionLuzLampara);
+ glLightfv(GL_LIGHT1,GL_SPOT_DIRECTION,light);
+ */
 	gluSphere(quad3,0.05f,100,20);
+
+  
 glPopMatrix();
 //FIN LAMPARA
 
@@ -791,15 +826,26 @@ void atiendeMenu (int opcion) {
   case  2: 
            eye[0]=3.0f; eye[1]=0.5f; eye[2]=1.0f;
            center[0]=2.0f;center[1]=0.0f; center[2]=0.0f;
-           break;         
+           break;    
+
+  case  4: 
+           
+           boira=true;
+           printf("Activada boira\n");
+           break;     
+  case  5: 
+           boira=false;
+           break;      
+   
   }
+
   glutPostRedisplay ();
 }
 
 /* Establece las opciones del menú desplegable -----------------------------*/
 void menu (void) {
 
-  int idMenuPrincipal, idMenuParalela, idMenuColor;
+  int idMenuPrincipal, idMenuParalela, /*idMenuColor*/ idMenuBoira;
 
   idMenuPrincipal= glutCreateMenu (atiendeMenu);
   glutAttachMenu (GLUT_RIGHT_BUTTON);
@@ -813,19 +859,24 @@ void menu (void) {
   glutSetMenu (idMenuPrincipal);
   glutAddSubMenu ("Posicion Camara", idMenuParalela);
 
-  idMenuColor= glutCreateMenu (atiendeMenu);
+  /*idMenuColor= glutCreateMenu (atiendeMenu);
   glutAddMenuEntry ("Rojo",  5);
   glutAddMenuEntry ("Verde", 6);
   glutAddMenuEntry ("Azul",  7);
   glutSetMenu (idMenuPrincipal);
-  glutAddSubMenu ("Color", idMenuColor);
+  glutAddSubMenu ("Color", idMenuColor);*/
+
+  idMenuBoira= glutCreateMenu (atiendeMenu);
+  glutAddMenuEntry ("Activa",  4);
+  glutAddMenuEntry ("Desactiva",  5);
+  glutSetMenu (idMenuPrincipal);
+  glutAddSubMenu ("Boira", idMenuBoira);
 }
 
 // ----------------------------------------------------------
 // Función “main()”
 // ----------------------------------------------------------
-int main(int argc, char* argv[]){
- 
+int main(int argc, char* argv[]){ 
   //  Inicializar los parámetros GLUT y de usuario proceso
   glutInit(&argc,argv);
 
