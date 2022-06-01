@@ -34,7 +34,7 @@ void Display (void){
 
   //Cubo();
  // Rectangulo();
- // Esfera();
+  //Esfera();
   ejesEspaciales();
   glFlush();
   glutSwapBuffers();

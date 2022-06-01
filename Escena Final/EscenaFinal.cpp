@@ -9,6 +9,8 @@ git merge origin
 #include <GL/gl.h>
 #include <GL/glu.h>
 #include <stdio.h>
+//#include<ctime> //para el delay de la animacion
+#include<unistd.h>
 #include <cmath> //Para calcular valores absolutos de variables
 const int W_WIDTH = 500; // Tama�o incial de la ventana
 const int W_HEIGHT = 500;
@@ -57,6 +59,8 @@ GLfloat luz[] = {1.0f, 0.0f, 0.0f, 1.0f};
 bool boira=false;
 bool isPrimer=true;
 
+//unsigned int microsecond = 100;
+
 // ----------------------------------------------------------
 // Funciones 
 // ----------------------------------------------------------
@@ -77,6 +81,7 @@ void movementCamara(int key);
 void paneo(int key);  
 void movimientoCamaraLibre(int key);  
 void movimietoEnUnPunto(int key);
+void animacion();
 
 
 // Funci�n que visualiza la escena OpenGL
@@ -117,7 +122,7 @@ void Display (void){
   }else if(tipoVision=='t'){ //camara gira entorno en un punto
     gluLookAt(eye[0],eye[1],eye[2]  ,center[0],center[1],center[2],  0.0f,1.0f,0.0f);
   }else if (tipoVision=='o'){//camara libre
-    printf("eye[0]= %f,eye[1]= %f,eye[2]= %f \n center[0]= %f,center[1]= %f,center[2]= %f \n posx=%f, posy=%f, angle=%f\n\n",eye[0] ,eye[1] ,  eye[2], center[0], center[1], center[2],posx,posy,angle);
+    //printf("eye[0]= %f,eye[1]= %f,eye[2]= %f \n center[0]= %f,center[1]= %f,center[2]= %f \n posx=%f, posy=%f, angle=%f\n\n",eye[0] ,eye[1] ,  eye[2], center[0], center[1], center[2],posx,posy,angle);
     center[0]=posx+cos(angle);
     center[2]=posy + sin(angle);
     eye[0]=posx; eye[2]=posy;
@@ -155,11 +160,39 @@ void Display (void){
   
   ejesEspaciales();
   plano(); //Suelo y paredes.
-  lampara();
+  //lampara();
+  animacion();
   glFlush();
   glutSwapBuffers();
 }
 
+float x=0.0f;
+float y=0.0f;
+float z=0.0f;
+bool salta=true;
+bool atura=true;
+void animacion(){
+  glPushMatrix();
+  float i=0;
+   if(y<0.8 && salta){ //salta
+   y=y+0.01f;
+   z=z-0.005f;
+   anguloBrazoAereo=anguloBrazoAereo-0.15f;
+   //printf("y=%f\n",y);
+   glTranslatef(0.0f,y,z);
+   }else if(y>0.1f && atura){ //baja
+     salta=false;
+     y=y-0.01f;
+     z=z-0.005f;
+     anguloBrazoAereo=anguloBrazoAereo+0.15f;
+     glTranslatef(0.0f,y,z);
+   }else{ //gira foco
+     atura=false;
+   }
+   lampara();
+   glutPostRedisplay();//  Solicitar actualización de visualización  
+  glPopMatrix();
+}
 
 void plano(){
  for(int i=0; i<4;i++){
@@ -642,7 +675,7 @@ void Rectangulo(){
 
 // Funci�n que se ejecuta cuando el sistema no esta ocupado
 void Idle (void){
-
+  animacion();
 	glutPostRedisplay();// Indicamos que es necesario repintar la pantalla
 }
 
@@ -769,11 +802,10 @@ void movementCamara(int key){
 }
 
 void movimientoCamaraLibre(int key){   
-  	if(key==GLUT_KEY_DOWN){
-		posx=posx - cos (angle);
+  if(key==GLUT_KEY_DOWN){
+	  posx=posx - cos (angle);
 		posy=posy - sin(angle);
-	}
-	else{
+	}else{
 		if(key==GLUT_KEY_UP){
 	 		posx=posx + cos (angle);
 		   posy=posy + sin(angle);
@@ -786,9 +818,11 @@ void movimientoCamaraLibre(int key){
 				if(key==GLUT_KEY_LEFT){
 					angle=angle - 0.1;
 					
-				}}
-		}}
-   
+				}
+      }
+
+		}
+  }   
   glutPostRedisplay();//  Solicitar actualización de visualización  
 }
 
@@ -866,16 +900,24 @@ void atiendeMenu (int opcion) {
            boira=false;
            printf("Desactiva boira\n");
            break;      
+
+    case  6: 
+          x=0.0f;
+          y=0.0f;
+          z=0.0f;
+          salta=true;
+          
+         break;  
    
   }
 
-  glutPostRedisplay ();
+  glutPostRedisplay();
 }
 
 /* Establece las opciones del menú desplegable -----------------------------*/
 void menu (void) {
 
-  int idMenuPrincipal, idMenuParalela, /*idMenuColor*/ idMenuBoira;
+  int idMenuPrincipal, idMenuParalela, idMenuBoira, idAnimacion;
 
   idMenuPrincipal= glutCreateMenu (atiendeMenu);
   glutAttachMenu (GLUT_RIGHT_BUTTON);
@@ -889,18 +931,16 @@ void menu (void) {
   glutSetMenu (idMenuPrincipal);
   glutAddSubMenu ("Posicion Camara", idMenuParalela);
 
-  /*idMenuColor= glutCreateMenu (atiendeMenu);
-  glutAddMenuEntry ("Rojo",  5);
-  glutAddMenuEntry ("Verde", 6);
-  glutAddMenuEntry ("Azul",  7);
-  glutSetMenu (idMenuPrincipal);
-  glutAddSubMenu ("Color", idMenuColor);*/
 
   idMenuBoira= glutCreateMenu (atiendeMenu);
   glutAddMenuEntry ("Activa",  4);
   glutAddMenuEntry ("Desactiva",  5);
   glutSetMenu (idMenuPrincipal);
   glutAddSubMenu ("Boira", idMenuBoira);
+
+  idAnimacion= glutCreateMenu (atiendeMenu);
+  glutSetMenu (idMenuPrincipal);
+  glutAddMenuEntry ("Animacion",  6);
 }
 
 // ----------------------------------------------------------
