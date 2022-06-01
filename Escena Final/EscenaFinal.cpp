@@ -81,7 +81,7 @@ void movimietoEnUnPunto(int key);
 
 // Funci�n que visualiza la escena OpenGL
 void Display (void){
-    printf("eye[0]= %f,eye[1]= %f,eye[2]= %f \n center[0]= %f,center[1]= %f,center[2]= %f \n posx=%f, posy=%f, angle=%f\n\n",eye[0] ,eye[1] ,  eye[2], center[0], center[1], center[2],posx,posy,angle);
+  //printf("eye[0]= %f,eye[1]= %f,eye[2]= %f \n center[0]= %f,center[1]= %f,center[2]= %f \n posx=%f, posy=%f, angle=%f\n\n",eye[0] ,eye[1] ,  eye[2], center[0], center[1], center[2],posx,posy,angle);
 
   //  Borrar pantalla y Z-buffer
   glEnable(GL_DEPTH_TEST);
@@ -844,9 +844,18 @@ void atiendeMenu (int opcion) {
           
            
   case  2:  
-           eye[0]=3.0f; eye[1]=0.5f; eye[2]=1.0f;
-           center[0]=2.0f;center[1]=0.0f; center[2]=0.0f;
-           break;    
+           eye[0]= 1.475389;eye[1]= 1.000000;eye[2]= 2.482042;
+            center[0]= 1.446190;center[1]= 0.800000;center[2]= 1.482469;
+          posx=1.504589; posy=3.481616; angle=-1.600000;
+           break;  
+
+  case  3:  
+        eye[0]= 0.606821;eye[1]= 0.500000;eye[2]= 0.763493; 
+ center[0]= 1.606821;center[1]= 0.600000;center[2]= 0.763493; 
+ posx=-0.393179; posy=0.763493; angle=0.000000;
+
+           break;  
+             
 
   case  4: 
            
