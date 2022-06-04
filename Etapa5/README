@@ -1,0 +1,35 @@
+Movimientos Lampara:
+	- Tecla b: Se muevo el brazo de la lampara:
+		- Tecla UP
+		- Tecla DOWN
+		
+	- Tecla m: Se mueve el foco de luz y un brazo pequeño que tiene:
+		- Tecla UP
+		- Tecla DOWN
+		- Tecla RIGHT
+		- Tecla LEFT
+		
+	- Tecla t: Se mueve todo el objeto.
+		- Tecla RIGHT
+		- Tecla LEFT
+		
+Movimineto de la camara.(etapa 4)
+	p-> Movimiento de camara tipo paneo.
+		-GLUT_KEY_UP
+		-GLUT_KEY_DOWN
+		-GLUT_KEY_LEFT
+		-GLUT_KEY_RIGHT
+	
+	t-> Movimiento en un punto.
+		-GLUT_KEY_UP
+		-GLUT_KEY_DOWN
+		-GLUT_KEY_LEFT
+		-GLUT_KEY_RIGHT
+	
+	o-> Movimiento camara libre.
+		-GLUT_KEY_UP
+		-GLUT_KEY_DOWN
+		-GLUT_KEY_LEFT
+		-GLUT_KEY_RIGHT
+		
+Click Derecho--> Menu Desplegable.
