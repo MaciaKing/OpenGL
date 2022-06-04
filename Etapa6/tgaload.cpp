@@ -22,14 +22,6 @@
    Finally exorcised all the paletted texture code...
 */
 
-//#include <windows.h>
-/*#include <GL/glu.h>
-#include <GL/glext.h>
-#include <GL/gl.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <cstring>
-#include "tgaload.h"*/
 #include <stdio.h>
 #include <GL/gl.h>
 #include <GL/glu.h>

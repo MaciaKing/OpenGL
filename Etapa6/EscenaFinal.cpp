@@ -14,7 +14,7 @@ warning --> git config --global core.autocrlf false
 #include <stdio.h>
 #include<unistd.h>
 #include <cmath> //Para calcular valores absolutos de variables
-#include "tgaload.h"
+#include "tgaload.h" 
 const int W_WIDTH = 500; // Tama�o incial de la ventana
 const int W_HEIGHT = 500;
 
@@ -94,6 +94,8 @@ void movimientoCamaraLibre(int key);
 void movimietoEnUnPunto(int key);
 void animacion();
 void initTexture (void);
+void setMaterial(GLfloat ambientR, GLfloat ambientG, GLfloat ambientB, GLfloat diffuseR,GLfloat diffuseG,
+GLfloat diffuseB, GLfloat specularR, GLfloat specularG, GLfloat specularB, GLfloat shiniess);
 
 
 // Funci�n que visualiza la escena OpenGL
@@ -104,11 +106,11 @@ void Display (void){
   glEnable(GL_DEPTH_TEST);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-  /*//Render de la luz
+  //Render de la luz
   glEnable (GL_LIGHTING);
   glEnable (GL_COLOR_MATERIAL);
   glColorMaterial (GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
-  glEnable (GL_LIGHT0);*/
+  glEnable (GL_LIGHT0);
 
 
   //boira
@@ -171,9 +173,9 @@ void Display (void){
 */
   
   ejesEspaciales();
-  plano(); //Suelo y paredes.
   //lampara();
   animacion();
+  plano(); //Suelo y paredes.
   glFlush();
   glutSwapBuffers();
 }
@@ -207,6 +209,9 @@ void animacion(){
 }
 
 void plano(){
+  setMaterial(0.0f, 0.1f, 0.0f, 
+  0.1f,0.1f,0.1f, 
+  0.0f, 0.9f, 0.0f, 1.0f);
  for(int i=0; i<4;i++){
  glPushMatrix();
  if(i==3){
@@ -1059,4 +1064,19 @@ void initTexture (void)
 	// carrega a segunda imagem TGA 
 	tgaLoad ("Imagenes/parquet.tga", &temp_image, TGA_FREE | TGA_LOW_QUALITY);
 
+}
+
+/*
+youtube.com/watch?v=4U12rvYOKN4
+*/
+void setMaterial(GLfloat ambientR, GLfloat ambientG, GLfloat ambientB, GLfloat diffuseR,GLfloat diffuseG,
+GLfloat diffuseB, GLfloat specularR, GLfloat specularG, GLfloat specularB, GLfloat shiniess){
+GLfloat ambient[] = {ambientR, ambientG, ambientB};
+GLfloat diffuse[] = {diffuseR, diffuseG, diffuseB};
+GLfloat specular[] = {specularR, specularG, specularB};
+
+glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, ambient);
+glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, diffuse);
+glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, specular);
+glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, shiniess);
 }
