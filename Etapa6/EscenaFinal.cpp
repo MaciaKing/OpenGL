@@ -61,6 +61,7 @@ GLfloat luz[] = {1.0f, 0.0f, 0.0f, 1.0f};
 
 bool boira=false;
 bool isPrimer=true;
+bool vullAnimacio=false;
 
 //Textures
 // Qtd m�xima de texturas a serem usadas no programa
@@ -173,8 +174,8 @@ void Display (void){
 */
   
   ejesEspaciales();
-  //lampara();
-  animacion();
+  lampara();
+  //animacion();
   plano(); //Suelo y paredes.
   glFlush();
   glutSwapBuffers();
@@ -203,7 +204,7 @@ void animacion(){
    }else{ //gira foco
      atura=false;
    }
-   lampara();
+   //lampara();
    glutPostRedisplay();//  Solicitar actualización de visualización  
   glPopMatrix();
 }
@@ -303,7 +304,7 @@ glPopMatrix();
 }
 
 void lampara(){  
- // glPushMatrix();
+glPushMatrix();
   glTranslatef(1.8f,0.05f,1.0f);
   glRotatef(rotarTodo,0.0f,1.0f,0.0f);
   glColor3f(1,1,1);
@@ -532,8 +533,8 @@ glPushMatrix();
 glPopMatrix();
 //FIN LAMPARA
 
-//moverBrazoAereo();
-//glPopMatrix();
+
+glPopMatrix();
 }
 
 void Esfera(){
@@ -713,8 +714,11 @@ void Rectangulo(){
 
 // Funci�n que se ejecuta cuando el sistema no esta ocupado
 void Idle (void){
-  animacion();
-	glutPostRedisplay();// Indicamos que es necesario repintar la pantalla
+ /* if(vullAnimacio){
+    animacion();
+  }*/
+	
+  glutPostRedisplay();// Indicamos que es necesario repintar la pantalla
 }
 
 // ----------------------------------------------------------
