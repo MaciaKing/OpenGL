@@ -11,6 +11,7 @@ git merge origin
 #include <stdio.h>
 #include<unistd.h>
 #include <cmath> //Para calcular valores absolutos de variables
+#include "tgaload.h"
 const int W_WIDTH = 500; // Tama�o incial de la ventana
 const int W_HEIGHT = 500;
 
@@ -58,7 +59,15 @@ GLfloat luz[] = {1.0f, 0.0f, 0.0f, 1.0f};
 bool boira=false;
 bool isPrimer=true;
 
-//unsigned int microsecond = 100;
+//Textures
+// Qtd m�xima de texturas a serem usadas no programa
+#define MAX_NO_TEXTURES 2
+
+#define TEXTURA_PARED 0
+#define TEXTURA_SUELO  1
+
+// vetor com os n�meros das texturas
+GLuint texture_id[MAX_NO_TEXTURES];
 
 // ----------------------------------------------------------
 // Funciones 
@@ -81,6 +90,7 @@ void paneo(int key);
 void movimientoCamaraLibre(int key);  
 void movimietoEnUnPunto(int key);
 void animacion();
+void initTexture (void);
 
 
 // Funci�n que visualiza la escena OpenGL
@@ -201,10 +211,16 @@ void plano(){
   glRotatef(90.0f,0.0f,0.0f,1.0f);
   glTranslatef(-1.5f,0.0f,0.0f);
 
- glColor3f(   1.0,  1.0, 0.0 );
+ glColor3f(   1.0,  0.0, 1.0 );    //AQUEST TEXTURA
  glRotatef(90.0f,1.0f,0.0f,0.0f);
  glNormal3f(0.0f,1.0f,0.0f);
- glRectf(0.0f, 0.0f, 1.5f, 1.5f);
+ //glRectf(0.0f, 0.0f, 1.5f, 1.5f);
+ glBegin(GL_POLYGON);
+    glVertex3f(  0.0f, 0.0f, 0.0f ); 
+    glVertex3f(  1.5f, 0.0f, 0.0f );
+    glVertex3f(  1.5f, 1.5f, 0.0f ); 
+    glVertex3f(  0.0f, 1.5f, 0.0f  ); 
+ glEnd();
 
 
  glRotatef(90.0f,1.0f,0.0f,0.0f);
@@ -233,9 +249,15 @@ void plano(){
  }else{
   //if(i==0) //res
  if(i==1) glRotatef(90.0f,-1.0f,0.0f,0.0f);
- glColor3f(   1.0,  1.0, 0.0 );
+ glColor3f(   1.0,  1.0, 1.0 );   // AQUEST TEXTURA
  glRotatef(90.0f,1.0f,0.0f,0.0f);
- glRectf(0.0f, 0.0f, 2.5f, 1.5f);
+ //glRectf(0.0f, 0.0f, 2.5f, 1.5f);
+ glBegin(GL_POLYGON);
+    glVertex3f(  0.0f, 0.0f, 0.0f ); 
+    glVertex3f(  2.5f, 0.0f, 0.0f );
+    glVertex3f(  2.5f, 1.5f, 0.0f ); 
+    glVertex3f(  0.0f, 1.5f, 0.0f  ); 
+ glEnd();
 
  glRotatef(90.0f,1.0f,0.0f,0.0f);
  glColor3f(1.0f,0.0f,1.0f);
@@ -254,10 +276,17 @@ void plano(){
  glColor3f(1.0f,0.0f,1.0f);
  glRectf(0.0f, 0.0f, 2.5f, -0.05f);
 
- glColor3f(   1.0,  1.0, 0.0 );
+ glColor3f(   1.0,  0.0, 0.0 );  //AQUEST TEXTURA ENTERRA
  glTranslatef(0.0f,-0.05f,-1.5f);
  glRotatef(90.0f,1.0f,0.0f,0.0f); 
- glRectf(0.0f, 0.0f, 2.5f, 1.5f);
+ //glRectf(0.0f, 0.0f, 2.5f, 1.5f);
+ glBindTexture( GL_TEXTURE_2D, texture_id[TEXTURA_SUELO]);
+ glBegin(GL_POLYGON);
+  glTexCoord2f(0.0f, 0.0f);  glVertex3f(  0.0f, 0.0f, 0.0f ); 
+  glTexCoord2f(2.5f, 0.0f);  glVertex3f(  2.5f, 0.0f, 0.0f );
+  glTexCoord2f(2.5f, 1.5f);  glVertex3f(  2.5f, 1.5f, 0.0f ); 
+  glTexCoord2f(0.0f, 1.5f);  glVertex3f(  0.0f, 1.5f, 0.0f ); 
+ glEnd();
  }
 glPopMatrix(); 
  }
@@ -974,4 +1003,54 @@ int main(int argc, char* argv[]){
   //  Regresar al sistema operativo
   return 0;
  
+}
+
+// **********************************************************************
+//  void initTexture(void)
+//		Define a textura a ser usada 
+//
+// **********************************************************************
+void initTexture (void)
+{
+
+	image_t temp_image; // vari�vel que ir� armazenar a textura a ser usada
+
+	// Habilita o uso de textura 
+	glEnable(GL_TEXTURE_2D );
+
+	// Define a forma de armazenamento dos pixels na textura (1= alihamento por byte)
+	glPixelStorei(GL_UNPACK_ALIGNMENT, 1 );
+
+	// Define quantas texturas ser�o usadas no programa 
+	glGenTextures(1, texture_id);  // 1 = uma textura;
+									// texture_id = vetor que guardas os n�meros das texturas
+
+	// Define os n�meros da textura dos cubos
+	texture_id[TEXTURA_PARED] = 1001;
+	texture_id[TEXTURA_SUELO] = 1002;
+
+	// ****
+	// Define a textura do objeto da ESQUERDA
+	// ****
+
+	// Define que tipo de textura ser� usada
+	// GL_TEXTURE_2D ==> define que ser� usada uma textura 2D (bitmaps)
+	// texture_id[TEXTURA_PARED]  ==> define o n�mero da textura 
+	glBindTexture( GL_TEXTURE_2D, texture_id[TEXTURA_PARED]);
+	// Carrega a primeira imagem .TGA 
+	tgaLoad("Imagenes/texturaPared.tga", &temp_image, TGA_FREE | TGA_LOW_QUALITY);
+
+
+	// ****
+	// Define a textura do objeto da DIREITA
+	// ****
+
+	// Define que tipo de textura ser� usada
+	// GL_TEXTURE_2D ==> define que ser� usada uma textura 2D (bitmaps)
+	// texture_id[TEXTURA_PARED]  ==> define o n�mero da textura 
+	glBindTexture(GL_TEXTURE_2D, texture_id[TEXTURA_SUELO]);
+
+	// carrega a segunda imagem TGA 
+	tgaLoad ("Imagenes/parquet.tga", &temp_image, TGA_FREE | TGA_LOW_QUALITY);
+
 }
