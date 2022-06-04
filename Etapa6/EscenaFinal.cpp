@@ -5,6 +5,7 @@ git reset
 git merge origin
 
 warning --> git config --global core.autocrlf false
+
 */
 
 #include <GL/glut.h>
@@ -103,11 +104,11 @@ void Display (void){
   glEnable(GL_DEPTH_TEST);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-  //Render de la luz
+  /*//Render de la luz
   glEnable (GL_LIGHTING);
   glEnable (GL_COLOR_MATERIAL);
   glColorMaterial (GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
-  glEnable (GL_LIGHT0);
+  glEnable (GL_LIGHT0);*/
 
 
   //boira
@@ -213,15 +214,16 @@ void plano(){
   glRotatef(90.0f,0.0f,0.0f,1.0f);
   glTranslatef(-1.5f,0.0f,0.0f);
 
- glColor3f(   1.0,  0.0, 1.0 );    //AQUEST TEXTURA
+ glColor3f(   1.0,  1.0, 1.0 );    //AQUEST TEXTURA
  glRotatef(90.0f,1.0f,0.0f,0.0f);
  glNormal3f(0.0f,1.0f,0.0f);
  //glRectf(0.0f, 0.0f, 1.5f, 1.5f);
+ glBindTexture( GL_TEXTURE_2D, texture_id[TEXTURA_PARED]);
  glBegin(GL_POLYGON);
-    glVertex3f(  0.0f, 0.0f, 0.0f ); 
-    glVertex3f(  1.5f, 0.0f, 0.0f );
-    glVertex3f(  1.5f, 1.5f, 0.0f ); 
-    glVertex3f(  0.0f, 1.5f, 0.0f  ); 
+  glTexCoord2f(0.0f, 0.0f);  glVertex3f(  0.0f, 0.0f, 0.0f ); 
+  glTexCoord2f(1.0f, 0.0f); glVertex3f(  1.5f, 0.0f, 0.0f );
+  glTexCoord2f(1.0f, 1.0f);  glVertex3f(  1.5f, 1.5f, 0.0f ); 
+  glTexCoord2f(0.0f, 1.0f);  glVertex3f(  0.0f, 1.5f, 0.0f  ); 
  glEnd();
 
 
@@ -254,11 +256,12 @@ void plano(){
  glColor3f(   1.0,  1.0, 1.0 );   // AQUEST TEXTURA
  glRotatef(90.0f,1.0f,0.0f,0.0f);
  //glRectf(0.0f, 0.0f, 2.5f, 1.5f);
+ glBindTexture( GL_TEXTURE_2D, texture_id[TEXTURA_PARED]);
  glBegin(GL_POLYGON);
-    glVertex3f(  0.0f, 0.0f, 0.0f ); 
-    glVertex3f(  2.5f, 0.0f, 0.0f );
-    glVertex3f(  2.5f, 1.5f, 0.0f ); 
-    glVertex3f(  0.0f, 1.5f, 0.0f  ); 
+  glTexCoord2f(0.0f, 0.0f);  glVertex3f(  0.0f, 0.0f, 0.0f ); 
+  glTexCoord2f(1.0f, 0.0f);  glVertex3f(  2.5f, 0.0f, 0.0f );
+  glTexCoord2f(1.0f, 1.0f);  glVertex3f(  2.5f, 1.5f, 0.0f ); 
+  glTexCoord2f(0.0f, 1.0f);  glVertex3f(  0.0f, 1.5f, 0.0f  ); 
  glEnd();
 
  glRotatef(90.0f,1.0f,0.0f,0.0f);
@@ -278,23 +281,23 @@ void plano(){
  glColor3f(1.0f,0.0f,1.0f);
  glRectf(0.0f, 0.0f, 2.5f, -0.05f);
 
- glColor3f(   1.0,  0.0, 0.0 );  //AQUEST TEXTURA ENTERRA
+ //glColor3f(   1.0,  0.0, 0.0 );  //AQUEST TEXTURA ENTERRA
  glTranslatef(0.0f,-0.05f,-1.5f);
  glRotatef(90.0f,1.0f,0.0f,0.0f); 
  //glRectf(0.0f, 0.0f, 2.5f, 1.5f);
  glBindTexture( GL_TEXTURE_2D, texture_id[TEXTURA_SUELO]);
  glBegin(GL_POLYGON);
   glTexCoord2f(0.0f, 0.0f);  glVertex3f(  0.0f, 0.0f, 0.0f ); 
-  glTexCoord2f(2.5f, 0.0f);  glVertex3f(  2.5f, 0.0f, 0.0f );
-  glTexCoord2f(2.5f, 1.5f);  glVertex3f(  2.5f, 1.5f, 0.0f ); 
-  glTexCoord2f(0.0f, 1.5f);  glVertex3f(  0.0f, 1.5f, 0.0f ); 
+  glTexCoord2f(1.0f, 0.0f);  glVertex3f(  2.5f, 0.0f, 0.0f );
+  glTexCoord2f(1.0f, 1.0f);  glVertex3f(  2.5f, 1.5f, 0.0f ); 
+  glTexCoord2f(0.0f, 1.0f);  glVertex3f(  0.0f, 1.5f, 0.0f ); 
  glEnd();
  }
 glPopMatrix(); 
  }
 }
 
-void lampara(){
+void lampara(){  
  // glPushMatrix();
   glTranslatef(1.8f,0.05f,1.0f);
   glRotatef(rotarTodo,0.0f,1.0f,0.0f);
@@ -998,6 +1001,7 @@ int main(int argc, char* argv[]){
   glutReshapeFunc(Reescalar); 
 
   menu();
+  initTexture();
 
   //  Pasar el control de eventos a GLUT
   glutMainLoop();
@@ -1040,7 +1044,7 @@ void initTexture (void)
 	// texture_id[TEXTURA_PARED]  ==> define o n�mero da textura 
 	glBindTexture( GL_TEXTURE_2D, texture_id[TEXTURA_PARED]);
 	// Carrega a primeira imagem .TGA 
-	tgaLoad("Imagenes/texturaPared.tga", &temp_image, TGA_FREE | TGA_LOW_QUALITY);
+	tgaLoad("Imagenes/pared.tga", &temp_image, TGA_FREE | TGA_LOW_QUALITY);
 
 
 	// ****
