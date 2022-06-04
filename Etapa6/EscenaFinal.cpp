@@ -3,6 +3,8 @@ Fer pull i me dona igual cambis en local
 git fetch
 git reset
 git merge origin
+
+warning --> git config --global core.autocrlf false
 */
 
 #include <GL/glut.h>
