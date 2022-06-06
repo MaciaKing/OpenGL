@@ -62,6 +62,7 @@ GLfloat luz[] = {1.0f, 0.0f, 0.0f, 1.0f};
 bool boira=false;
 bool isPrimer=true;
 bool vullAnimacio=true;
+bool luzActivada=true;
 
 //Textures
 // Qtd m�xima de texturas a serem usadas no programa
@@ -105,16 +106,22 @@ void Display (void){
   glEnable(GL_DEPTH_TEST);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-  //Render de la luz
-/*  glEnable (GL_LIGHTING);
+ printf("Luz --> %d\n",luzActivada);
+if(luzActivada){//Luz ambiente potente
+  printf("otra vez luz !! \n");
+  GLfloat light_ambient[] = { 0.2, 0.2, 0.2, 1.0 }; GLfloat light1_position[] = { -2.0, 2.0, 1.0, 1.0 }; GLfloat light2_position[] = { 2.0, -2.0, 1.0, 1.0 };
+  glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient); glLightfv(GL_LIGHT0, GL_POSITION, light1_position); glLightfv(GL_LIGHT1, GL_AMBIENT, light_ambient);
+  glLightfv(GL_LIGHT1, GL_POSITION, light2_position);
+  glEnable(GL_LIGHT0); glEnable(GL_LIGHT1);
+}else{//Luz tenue 
+   //Render de la luz
+  glDisable(GL_LIGHT1); 
+  glEnable (GL_LIGHTING);
   glEnable (GL_COLOR_MATERIAL);
   glColorMaterial (GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
-  glEnable (GL_LIGHT0);*/
-
-GLfloat light_ambient[] = { 0.2, 0.2, 0.2, 1.0 }; GLfloat light1_position[] = { -2.0, 2.0, 1.0, 1.0 }; GLfloat light2_position[] = { 2.0, -2.0, 1.0, 1.0 };
-glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient); glLightfv(GL_LIGHT0, GL_POSITION, light1_position); glLightfv(GL_LIGHT1, GL_AMBIENT, light_ambient);
-glLightfv(GL_LIGHT1, GL_POSITION, light2_position);
-glEnable(GL_LIGHT0); glEnable(GL_LIGHT1);
+  glEnable (GL_LIGHT0);
+  //glDisable(GL_FOG);
+} 
 
   //boira
   if(boira){
@@ -959,7 +966,14 @@ void atiendeMenu (int opcion) {
           vullAnimacio=true;
           
          break;  
-   
+
+    case  7: //Luz tenue
+          luzActivada=false;          
+     break;  
+
+     case  8: //Desactivar luces
+          luzActivada=true;          
+     break;  
   }
 
   glutPostRedisplay();
@@ -980,7 +994,6 @@ void menu (void) {
   glutSetMenu (idMenuPrincipal);
   glutAddSubMenu ("Posicion Camara", idMenuParalela);
 
-
   idMenuBoira= glutCreateMenu (atiendeMenu);
   glutAddMenuEntry ("Activa",  4);
   glutAddMenuEntry ("Desactiva",  5);
@@ -990,6 +1003,12 @@ void menu (void) {
   idAnimacion= glutCreateMenu (atiendeMenu);
   glutSetMenu (idMenuPrincipal);
   glutAddMenuEntry ("Animacion",  6);
+
+  idMenuParalela= glutCreateMenu (atiendeMenu);
+  glutAddMenuEntry ("Luz Tenue", 7);
+  glutAddMenuEntry ("Activar Luz", 8);
+  glutSetMenu (idMenuPrincipal);
+  glutAddSubMenu ("Iluminacion", idMenuParalela);
 }
 
 // ----------------------------------------------------------
