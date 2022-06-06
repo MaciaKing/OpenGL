@@ -106,15 +106,15 @@ void Display (void){
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
   //Render de la luz
-  glEnable (GL_LIGHTING);
+/*  glEnable (GL_LIGHTING);
   glEnable (GL_COLOR_MATERIAL);
   glColorMaterial (GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
-  glEnable (GL_LIGHT0);
+  glEnable (GL_LIGHT0);*/
 
-/*GLfloat light_ambient[] = { 0.2, 0.2, 0.2, 1.0 }; GLfloat light1_position[] = { -2.0, 2.0, 1.0, 1.0 }; GLfloat light2_position[] = { 2.0, -2.0, 1.0, 1.0 };
+GLfloat light_ambient[] = { 0.2, 0.2, 0.2, 1.0 }; GLfloat light1_position[] = { -2.0, 2.0, 1.0, 1.0 }; GLfloat light2_position[] = { 2.0, -2.0, 1.0, 1.0 };
 glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient); glLightfv(GL_LIGHT0, GL_POSITION, light1_position); glLightfv(GL_LIGHT1, GL_AMBIENT, light_ambient);
 glLightfv(GL_LIGHT1, GL_POSITION, light2_position);
-glEnable(GL_LIGHT0); glEnable(GL_LIGHT1);*/
+glEnable(GL_LIGHT0); glEnable(GL_LIGHT1);
 
   //boira
   if(boira){
@@ -508,17 +508,31 @@ glPushMatrix();
  glLightfv(GL_LIGHT1, GL_DIFFUSE, luz);
  glLightfv(GL_LIGHT1,GL_POSITION,posicionLuzLampara);
  glLightfv(GL_LIGHT1,GL_SPOT_DIRECTION,light);*/
+
+
+ GLfloat light1Value[] = { 0,0,1 };
  
- /*GLfloat light1Value[] = { 0,0,1 };
- glEnable(GL_LIGHT1);
+
  glLightfv(GL_LIGHT1, GL_DIFFUSE, light1Value);
+ //glLightfv(GL_LIGHT1, GL_SPECULAR, light1Value);
  glLighti(GL_LIGHT1, GL_SPOT_CUTOFF, 45);
  glLightf(GL_LIGHT1, GL_SPOT_EXPONENT, 10);
  GLfloat lightbulbPosition[] = { 0,0,0 }, lightbulbSpotlightDirection[] = { 1,1,1 };
  glLightfv(GL_LIGHT1, GL_POSITION, lightbulbPosition);
  glLightfv(GL_LIGHT1, GL_SPOT_DIRECTION, lightbulbSpotlightDirection);
- */
- gluSphere(quad3,0.05f,100,20);
+ glEnable(GL_LIGHT1);
+
+
+glPushMatrix();
+ glColor3f(1.0f,0.0f,0.0f);
+ glutSolidSphere(0.05f,100,20);
+ //glEnable(GL_LIGHTING);
+glPopMatrix();
+ //glDisable(GL_LIGHTING);
+ 
+// gluSphere(quad3,0.05f,100,20);
+  
+ //glEnable(GL_LIGHT1);
 
   
 glPopMatrix();
