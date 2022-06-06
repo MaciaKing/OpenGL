@@ -61,7 +61,7 @@ GLfloat luz[] = {1.0f, 0.0f, 0.0f, 1.0f};
 
 bool boira=false;
 bool isPrimer=true;
-bool vullAnimacio=false;
+bool vullAnimacio=true;
 
 //Textures
 // Qtd m�xima de texturas a serem usadas no programa
@@ -101,8 +101,6 @@ GLfloat diffuseB, GLfloat specularR, GLfloat specularG, GLfloat specularB, GLflo
 
 // Funci�n que visualiza la escena OpenGL
 void Display (void){
-  //printf("eye[0]= %f,eye[1]= %f,eye[2]= %f \n center[0]= %f,center[1]= %f,center[2]= %f \n posx=%f, posy=%f, angle=%f\n\n",eye[0] ,eye[1] ,  eye[2], center[0], center[1], center[2],posx,posy,angle);
-
   //  Borrar pantalla y Z-buffer
   glEnable(GL_DEPTH_TEST);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -112,7 +110,6 @@ void Display (void){
   glEnable (GL_COLOR_MATERIAL);
   glColorMaterial (GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
   glEnable (GL_LIGHT0);
-
 
   //boira
   if(boira){
@@ -124,11 +121,8 @@ void Display (void){
    glFogf(GL_FOG_END,3.5);
   }
 
-
- // glLightfv(GL_LIGHT0,GL_AMBIENT,new GLfloat[4]{0.5f,0.5f,0.5f,1});
   // Resetear transformaciones
   glLoadIdentity();
-  //glTranslatef(aux,0.0f,0.0f);
   
   //CAMARA
   if (tipoVision=='p'){//paneo
@@ -143,37 +137,12 @@ void Display (void){
     eye[0]=posx; eye[2]=posy;
     gluLookAt(eye[0] ,eye[1] ,  eye[2], center[0], center[1], center[2],0,1,0);       
   }
-/*
-1---- eye[0]= 5.590000,eye[1]= 1.000000,eye[2]= 0.570000 
- center[0]= 4.600000,center[1]= 0.800000,center[2]= 0.530000 
- posx=4.600000, posy=0.530000
 
- eye[0]= 4.600000,eye[1]= 1.000000,eye[2]= 0.530000 
- center[0]= 3.612520,center[1]= 0.800000,center[2]= 0.687745 
- posx=4.600000, posy=0.530000
-
-*/
-//printf("eye[0]= %f,eye[1]= %f,eye[2]= %f  || center[0]= %f,center[1]= %f,center[2]= %f\n",eye[0],eye[1],eye[2],center[0],center[1],center[2]);
-  /*//glRotatef(aux,0.0f,1.0f,0.0f);
-  //rotar();
-  gluPerspective(100.0f,W_WIDTH/W_HEIGHT,0.1f,20.0f);
-  //gluLookAt(0.0f,1.0f,-1.0f, 0.0f,0.0f,0.0f, 0.0f,2.0f,0.0f); //mirada al centro de la lampara
-  //gluLookAt(0.0f,0.0f,-1.0f, 0.0f,0.0f,0.0f, 0.0f,2.0f,0.0f); //mirada al centro de la lampara
- // gluLookAt(0.6f,0.0f,-0.5f, 0.0f,0.0f,0.0f, 0.0f,1.0f,0.0f); //mirada desde un lado
-  gluLookAt(2.5f,0.2f,1.0f, 0.0f,0.0f,0.0f, 0.0f,1.0f,0.0f); //Escena final
-  //gluLookAt(2.5f,0.5f,1.0f, 0.0f,0.0f,0.0f, 0.0f,1.0f,0.0f);
-  // gluLookAt(0.0f,0.0f,0.5f, 0.0f,0.0f,0.0f, 0.0f,1.0f,0.0f); //mirada desde atras perfecta
-  */
-  //gluLookAt(0.01f,-1.5f,0.0f, 0.0f,0.0f,0.0f, 0.0f,1.0f,0.0f); //Vista de arriba perfecta
-
- /* gluPerspective(90.0f,1.0f,0.0f,10.0f);
-  //gluLookAt(1.0f,-1.0f,1.0f,0.0f,0.0f,0.0f,1.0f,1.0f,1.0f); //define una transformacion visual
-  //gluLookAt(rotateEjeX,rotateEjeY,rotateEjeZ,0.0f,0.0f,0.0f,1.0f,1.0f,1.0f);
-  //gluLookAt(rotateEjeX,rotateEjeY,rotateEjeZ,0.0f,0.0f,0.0f,0.0f,1.0f,0.0f);
-  gluLookAt(0.0f,1.0f,rotarEjeZ,paneoEjeX,paneoEjeY,0.0f,0.0f,1.0f,0.0f);
-*/
   
   ejesEspaciales();
+  /*if(vullAnimacio){
+
+  }else lampara();*/
   lampara();
   //animacion();
   plano(); //Suelo y paredes.
@@ -501,7 +470,7 @@ glPopMatrix();
 
 glTranslatef(0.0f,0.74f,-0.03f);
 glPushMatrix();
- //glColor3f(0.0f,1.0f,1.0f);
+ glColor3f(1.0f,1.0f,1.0f);
  GLUquadric *quad2;
  quad2 = gluNewQuadric();
  gluCylinder(quad2,0.005,0.005,0.1,25,25);
@@ -513,20 +482,29 @@ glPopMatrix();
 glPushMatrix(); 
  //glColor3f(1.0f,1.0f,1.0f);
  glTranslatef(0.0f,0.0f,-0.05f);    
- glutSolidCone(0.1f,0.1f,32,20);
+ //glutSolidCone(0.1f,0.1f,32,20);
  //Esfera de luz
   glTranslatef(0.0f,0.0f,0.01f);  
  	//glColor3f(1,0,0);
 	GLUquadric *quad3;
 	quad3 = gluNewQuadric();
-/*
- glEnable(GL_LIGHT1); 
+
+/* glEnable(GL_LIGHT1); 
  glLighti(GL_LIGHT1, GL_SPOT_CUTOFF,45);
  glLightf(GL_LIGHT1, GL_SPOT_EXPONENT, 10);
  glLightfv(GL_LIGHT1, GL_DIFFUSE, luz);
  glLightfv(GL_LIGHT1,GL_POSITION,posicionLuzLampara);
- glLightfv(GL_LIGHT1,GL_SPOT_DIRECTION,light);
- */
+ glLightfv(GL_LIGHT1,GL_SPOT_DIRECTION,light);*/
+ GLfloat light1Value[] = { 0,0,1 };
+ glEnable(GL_LIGHT1);
+		glLightfv(GL_LIGHT1, GL_DIFFUSE, light1Value);
+		glLighti(GL_LIGHT1, GL_SPOT_CUTOFF, 45);
+		glLightf(GL_LIGHT1, GL_SPOT_EXPONENT, 10);
+
+ GLfloat lightbulbPosition[] = { 0,0,0 }, lightbulbSpotlightDirection[] = { 1,1,1 };
+ glLightfv(GL_LIGHT1, GL_POSITION, lightbulbPosition);
+ glLightfv(GL_LIGHT1, GL_SPOT_DIRECTION, lightbulbSpotlightDirection);
+ 
 	gluSphere(quad3,0.05f,100,20);
 
   
@@ -714,8 +692,11 @@ void Rectangulo(){
 
 // Funci�n que se ejecuta cuando el sistema no esta ocupado
 void Idle (void){
- /* if(vullAnimacio){
-    animacion();
+  printf("vullAnimacio=\n");
+  /*printf("vullAnimacio= %B\n",vullAnimacio);
+  if(vullAnimacio){
+    printf("ANIMACIOOO \n");
+    animacion(); 
   }*/
 	
   glutPostRedisplay();// Indicamos que es necesario repintar la pantalla
@@ -948,6 +929,7 @@ void atiendeMenu (int opcion) {
           y=0.0f;
           z=0.0f;
           salta=true;
+          vullAnimacio=true;
           
          break;  
    
@@ -963,8 +945,6 @@ void menu (void) {
 
   idMenuPrincipal= glutCreateMenu (atiendeMenu);
   glutAttachMenu (GLUT_RIGHT_BUTTON);
-
-  //glutAddMenuEntry ("Vista", 1);
 
   idMenuParalela= glutCreateMenu (atiendeMenu);
   glutAddMenuEntry ("Camara 1", 1);
@@ -1003,10 +983,8 @@ int main(int argc, char* argv[]){
 
   // Funciones de retrollamada
   glutDisplayFunc(Display);
-  //glutSpecialFunc(movimientoLampara);
   glutSpecialFunc(movimientoCamaraOLampara);
   glutKeyboardFunc(detectaTecla);
- // glutKeyboardFunc();
   glutReshapeFunc(Reescalar); 
 
   menu();
@@ -1017,7 +995,6 @@ int main(int argc, char* argv[]){
  
   //  Regresar al sistema operativo
   return 0;
- 
 }
 
 // **********************************************************************
