@@ -106,16 +106,20 @@ void Display (void){
   glEnable(GL_DEPTH_TEST);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
- printf("Luz --> %d\n",luzActivada);
+ //printf("Luz --> %d\n",luzActivada);
 if(luzActivada){//Luz ambiente potente
-  printf("otra vez luz !! \n");
+ // glDisable(GL_LIGHT0);
+  glDisable(GL_LIGHT1);
+  glDisable(GL_LIGHT0); 
+  //printf("otra vez luz !! \n");
   GLfloat light_ambient[] = { 0.2, 0.2, 0.2, 1.0 }; GLfloat light1_position[] = { -2.0, 2.0, 1.0, 1.0 }; GLfloat light2_position[] = { 2.0, -2.0, 1.0, 1.0 };
   glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient); glLightfv(GL_LIGHT0, GL_POSITION, light1_position); glLightfv(GL_LIGHT1, GL_AMBIENT, light_ambient);
   glLightfv(GL_LIGHT1, GL_POSITION, light2_position);
   glEnable(GL_LIGHT0); glEnable(GL_LIGHT1);
 }else{//Luz tenue 
    //Render de la luz
-  glDisable(GL_LIGHT1); 
+  glDisable(GL_LIGHT1);
+  glDisable(GL_LIGHT0); 
   glEnable (GL_LIGHTING);
   glEnable (GL_COLOR_MATERIAL);
   glColorMaterial (GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
@@ -126,7 +130,7 @@ if(luzActivada){//Luz ambiente potente
   //boira
   if(boira){
    glEnable (GL_FOG);
-   float color[]={1.0,0.0,0.0,0.5};
+   float color[]={0.155,0.155,0.155,0.5};
    glFogfv(GL_FOG_COLOR,color); 
    glFogi(GL_FOG_MODE, GL_LINEAR);
    glFogf(GL_FOG_START,1.50);
@@ -502,7 +506,7 @@ glPopMatrix();
 glPushMatrix(); 
  //glColor3f(1.0f,1.0f,1.0f);
  glTranslatef(0.0f,0.0f,-0.05f);    
- //glutSolidCone(0.1f,0.1f,32,20);
+ glutSolidCone(0.1f,0.1f,32,20);
  //Esfera de luz
   glTranslatef(0.0f,0.0f,0.01f);  
  	//glColor3f(1,0,0);
@@ -726,7 +730,7 @@ void Rectangulo(){
 
 // Funci�n que se ejecuta cuando el sistema no esta ocupado
 void Idle (void){
-  printf("vullAnimacio=\n");
+ // printf("vullAnimacio=\n");
   /*printf("vullAnimacio= %B\n",vullAnimacio);
   if(vullAnimacio){
     printf("ANIMACIOOO \n");
@@ -769,7 +773,7 @@ void movimientoLampara(int key){
     }
     }
 
-    else if (key == GLUT_KEY_DOWN){
+   /* else if (key == GLUT_KEY_DOWN){
       m.movAnguloX=true;
       m.rotarX+=0.5f;
       //printf("DOOOOWN\n");
@@ -779,9 +783,9 @@ void movimientoLampara(int key){
       m.movAnguloX=true;
       m.rotarX-=0.5f;   
      // printf("UUUUUP\n");   
-    }
+    }*/
     
-    printf("rotarX = %f, rotarY= %f\n",m.rotarX,m.rotarY);
+    //printf("rotarX = %f, rotarY= %f\n",m.rotarX,m.rotarY);
   //MOVIMIENTOS BRAZO   
   }else if(movimiento=='b'){ 
     if(key == GLUT_KEY_UP){
@@ -955,17 +959,17 @@ void atiendeMenu (int opcion) {
            break;     
   case  5: 
            boira=false;
-           printf("Desactiva boira\n");
+           //printf("Desactiva boira\n");
            break;      
 
-    case  6: 
+  /*  case  6: 
           x=0.0f;
           y=0.0f;
           z=0.0f;
           salta=true;
           vullAnimacio=true;
           
-         break;  
+         break;  */
 
     case  7: //Luz tenue
           luzActivada=false;          
@@ -1000,9 +1004,9 @@ void menu (void) {
   glutSetMenu (idMenuPrincipal);
   glutAddSubMenu ("Boira", idMenuBoira);
 
-  idAnimacion= glutCreateMenu (atiendeMenu);
+ /* idAnimacion= glutCreateMenu (atiendeMenu);
   glutSetMenu (idMenuPrincipal);
-  glutAddMenuEntry ("Animacion",  6);
+  glutAddMenuEntry ("Animacion",  6);*/
 
   idMenuParalela= glutCreateMenu (atiendeMenu);
   glutAddMenuEntry ("Luz Tenue", 7);
